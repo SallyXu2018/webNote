@@ -785,4 +785,189 @@ function f1() {
 }
 console.log(f1(10,20,30,40));
 ```
+### 作用域
+
+##### 全局变量
+
+声明的变量是使用var声明的，这个变量就是全局变量，在页面的任何地方都可以使用。
+
+除了函数里面以外定义的变量，都是全局变量。全局变量，如果页面不关闭那么就不会释放，就会占空间，消耗内存。
+
+##### 局部变量
+
+在函数内部定义的变量，是局部变量，外面不能使用。
+
+##### 隐式全局变量
+
+声明的变量没有var，在一个函数里面定义了隐式全局变量在函数外部是可以被访问的。
+
+```js
+function f1() {
+    num1=10;//隐式全局变量
+    var num2=20;//局部变量
+}
+f1();
+console.log(num1);
+console.log(num2);//!!!ReferenceError: num2 is not defined
+```
+
+全局变量是不能被删除的，隐式全局变量是可以被删除的。
+
+```js
+var num1=10;
+num2=20;//隐式全局变量
+delete num1;
+delete num2;
+console.log(num1+10);//20
+console.log(typeof num2);//undefined 隐式全局变量可以被删除
+```
+
+
+
+全局作用域：全局变量的适用范围
+
+局部作用域：局部变量的适用范围
+
+块级作用域：一对大括号就可以看成是一块，在这对大括号里定义的变量只能在这块中使用。但是在Js中在大括号中定义的变量，在大括号外仍旧能访问，所以Js中没有块级作用域，只有函数除外。
+
+```js
+<script>//0级作用域
+    var num1=10;
+    function f1() {//1级作用域
+        var num1=20;
+        function f2() {//2级作用域
+            var num1=30;
+            function f3() {//3级作用域
+                var num1=40;
+                console.log(num1);
+            }
+            f3();
+        }
+        f2();
+    }
+    f1();//输出3级，如果3级作用域没定义，则往上找定义的变量直至0级，还没有的话则报错
+    //整个形成的关系叫做作用域链
+</script>
+```
+
+### 预解析
+
+##### 预解析过程
+
+- 把变量的声明提前到当前作用域的最前面，只提升声明，不提升赋值
+- 把函数的声明提前到当前作用域的最上面，只提升声明，不提升赋值
+- 先提升var，再提升function
+
+```js
+// function f1() {
+//     //var num;
+//     console.log(num);
+//     var num=20;
+// }//函数声明提前
+f1();//调用
+var num=10;
+function f1() {
+    //var num;
+    console.log(num);
+    var num=20;
+}//undefined
+//存在预解析，f1声明提前
+
+//var num;//变量声明提前，先提升var
+// function f1() {
+//     console.log(num);
+// }//函数声明提前，再提升function
+f1();//调用
+var num=10;
+function f1() {
+    console.log(num);
+}//undefined
+```
+
+##### 注意
+
+- 函数中的变量值会提升到函数作用域的最上面，不会出去
+
+```
+function f2() {
+    //var num;
+    console.log(num);//undefined
+    var num=10;
+}
+f2();
+console.log(num);//报错
+
+```
+
+- 预解析会分段，多对script标签中函数重名，预解析的时候不会冲突
+
+
+
+##### 快速解析预解析结果案例
+
+```js
+//var a;//先提前声明var
+// function a() {
+// console.log("aaaa");
+// }//在提前声明函数
+console.log(a);//输出a函数代码
+function a() {
+    console.log("aaaa");
+}
+var a=10;
+console.log(a);//输出10
+```
+
+```js
+//var a;//提前声明var变量
+var a=18;
+// function f1() {
+//     var b;
+//     var a;
+//     b=9;
+//     console.log(a);//输出undefined
+//     console.log(b);//输出9
+//     a="123";
+// }//提前声明function
+f1();
+function f1() {
+    var b=9;
+    console.log(a);//undefined
+    console.log(b);//9
+    var a="123";
+}
+```
+
+```js
+// function f1() {
+//     var a;//局部变量
+//     a=9;
+//隐式全局变量b,c 在外不可以访问
+//     b=9;
+//     c=9;
+//     console.log(a);
+//     console.log(b);
+//     console.log(c);
+// }
+f1();
+console.log(c);//输出9
+console.log(b);//输出9
+console.log(a);//输出报错
+function f1() {
+    var a=b=c=9;
+    console.log(a);//输出9
+    console.log(b);//输出9
+    console.log(c);//输出9
+}
+```
+
+```js
+//var f1;
+f1();//报错，这是种假象
+var f1=function () {
+  console.log(a);
+  var a=10;
+};
+```
+
 
