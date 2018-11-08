@@ -28,4 +28,7 @@
 程序员用的浏览器推荐：MDN
 
 
-### [JS笔记一](https://github.com/SallyXu2018/webNote/blob/master/Js/JsNote.md "JS笔记一")
+### [变量与进制](https://github.com/SallyXu2018/webNote/blob/master/Js/JsNote.md "JS笔记一")
+### [流程控制与数组](https://github.com/SallyXu2018/webNote/blob/master/Js/JsNote.md "JS笔记一")
+### [函数](https://github.com/SallyXu2018/webNote/blob/master/Js/JsNote.md "JS笔记一")
+### [对象](https://github.com/SallyXu2018/webNote/blob/master/Js/JsNote.md "JS笔记一")
