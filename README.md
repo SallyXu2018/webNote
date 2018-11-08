@@ -28,7 +28,7 @@
 程序员用的浏览器推荐：MDN
 
 
-### [变量与进制](https://github.com/SallyXu2018/webNote/blob/master/Js/JsNote.md "JS笔记一")
-### [流程控制与数组](https://github.com/SallyXu2018/webNote/blob/master/Js/JsNote.md "JS笔记一")
-### [函数](https://github.com/SallyXu2018/webNote/blob/master/Js/JsNote.md "JS笔记一")
-### [对象](https://github.com/SallyXu2018/webNote/blob/master/Js/JsNote.md "JS笔记一")
+### [变量与进制](https://github.com/SallyXu2018/webNote/blob/master/Js/blandjzandlx.md)
+### [流程控制与数组](https://github.com/SallyXu2018/webNote/blob/master/Js/lcandsz.md)
+### [函数](https://github.com/SallyXu2018/webNote/blob/master/Js/function.md)
+### [对象](https://github.com/SallyXu2018/webNote/blob/master/Js/object.md)
