@@ -1,4 +1,4 @@
-# JS
+# JavaScript
 ### JavaScript是什么？
 
 脚本语言：不需要编译，直接运行
@@ -19,15 +19,19 @@
 
 ##### ECMAScript标准：js的基本语法
 
-##### DOM：
+##### DOM（document object model）： 文档对象模型
 
-##### BOOM：
+作用：操作页面元素
 
+##### BOM（browser object model）：浏览器对象模型 
+
+作用：操作浏览器
 
 
 程序员用的浏览器推荐：MDN
 
 
+## ECMAScript标准：js的基本语法
 ### [变量与进制](https://github.com/SallyXu2018/webNote/blob/master/Js/blandjzandlx.md)
 ### [流程控制与数组](https://github.com/SallyXu2018/webNote/blob/master/Js/lcandsz.md)
 ### [函数](https://github.com/SallyXu2018/webNote/blob/master/Js/function.md)
