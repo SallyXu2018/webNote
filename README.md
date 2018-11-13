@@ -36,3 +36,5 @@
 ### [流程控制与数组](https://github.com/SallyXu2018/webNote/blob/master/Js/lcandsz.md)
 ### [函数](https://github.com/SallyXu2018/webNote/blob/master/Js/function.md)
 ### [对象](https://github.com/SallyXu2018/webNote/blob/master/Js/object.md)
+
+## DOM（document object model）： 文档对象模型
