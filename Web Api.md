@@ -36,15 +36,15 @@
 
 
 
-### 获取元素的两种方式
+### 获取元素的两种方式（重点）
 
-- 根据id从整个文档中获取元素---返回的是一个元素对象
+- ##### 根据id从整个文档中获取元素---返回的是一个元素对象
 
-document.getElementById("id属性的值")
+document.getElementById("id属性的值")；
 
-- 根据标签的名字获取元素--返回的是元素对象组成的伪数组
+- ##### 根据标签的名字获取元素--返回的是元素对象组成的伪数组
 
-document.getElementByTagName("标签的名字")
+document.getElementByTagName("标签的名字")；
 
 
 
@@ -86,7 +86,7 @@ BOM对象：通过DOM方式获取的元素得到的对象
 
 如：document.getElementsByTagName("标签的名字");
 
-### 练习总结
+## day1-练习总结
 
 - 凡是成对标签，中间的文本内容设置的时候，都用innerText这个属性的方式
 - document.getElementsByTagName("标签的名字");返回的是一个伪数组
@@ -97,3 +97,54 @@ BOM对象：通过DOM方式获取的元素得到的对象
 - 凡是css中这个属性是多个单词的写法，在Js代码中DOM操作的时候，把-干掉，后面的单词首字母大写即可
 - 在js代码中DOM操作的时候，设置元素的类样式，不用class关键字，应该使用className
 
+
+
+### 其他的获取元素的总结
+
+前面的两个由的浏览器不支持
+
+- ##### 根据name属性值获取元素------->返回的是元素对象组成的伪数组
+
+document.getElementByName("属性的名字")； 
+
+通过name属性值获取标签-------->表单标签（属于H5）
+
+- ##### 根据类样式的名字来获取元素-------->返回的是元素对象组成的伪数组
+
+document.getElementsByClassName("类型样式的名字")； 
+
+- 根据选择器的方式获取元素----->返回的是一个对象
+
+document.querySelector("选择器的名字")；
+
+- 根据选择器的方式获取元素---->返回的是一个伪数组
+
+document.querySelectorAll("选择器的名字")；
+
+
+
+## day2-练习总结
+
+- 禁用文本框，设置disabled属性
+
+- 如何阻止超链接跳转 点击事件return false
+
+- 为鼠标添加进入事件：onmouseover
+
+- 为鼠标添加离开事件：onmouseleave
+
+- 注册获取焦点事件：onfocus
+
+- 注册失去焦点事件：onblur
+
+- innerHTML是可以设置文本内容---------->推荐。innerHTML主要的作用是在标签中设置新的html标签内容，是有标签效果的
+
+- 练习20重点
+
+- 在html标签中添加的自定义属性，如果想要获取这个属性的值，需要调用getAttribute("属性的名字")才能获取到这个属性的值
+
+- 设置自定义属性：setAttribute("属性的名字",属性的值);
+
+- 获取自定义属性的值：getAttribute("属性的名字")
+
+- 移除自定义属性：removeAttribute("属性的名字");，也可以移除元素的自带的属性
