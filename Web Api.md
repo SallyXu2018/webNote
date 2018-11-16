@@ -139,7 +139,28 @@ document.querySelectorAll("选择器的名字")；
 
 - innerHTML是可以设置文本内容---------->推荐。innerHTML主要的作用是在标签中设置新的html标签内容，是有标签效果的
 
-- 练习20重点
+- 如何判断该浏览器是否兼容这个属性---->输出值是否为undefined
+
+  ```js
+  //兼容代码
+  //设置任意的标签中的任意文本内容  设置没有返回值
+  function setInnerText(element,text) {
+      //判断这个浏览器是否支持这个属性--------------------------------->undefined
+      if(typeof element.textContent=="undefined"){//浏览器不支持
+          element.innerText=text;
+      }else{//浏览器支持
+          element.textContent=text;
+      }
+  }
+  //获取任意标签中的内容
+  function getInnerText(element) {
+      if(typeof  element.textContent=="undefined"){
+          return element.innerText;
+      }else {
+          return element.textContent;
+      }
+  }
+  ```
 
 - 在html标签中添加的自定义属性，如果想要获取这个属性的值，需要调用getAttribute("属性的名字")才能获取到这个属性的值
 
@@ -148,3 +169,40 @@ document.querySelectorAll("选择器的名字")；
 - 获取自定义属性的值：getAttribute("属性的名字")
 
 - 移除自定义属性：removeAttribute("属性的名字");，也可以移除元素的自带的属性
+
+- 案例tab切换案例实现
+
+  ```js
+  //获取最外面的div
+  var box=my$("box");
+  //获取第一个div
+  var hd=box.getElementsByTagName("div")[0];
+  //获取第二个div
+  var bd=box.getElementsByTagName("div")[1];
+  //获取所有的span标签
+  var spans=hd.getElementsByTagName("span");
+  //获取所有的li标签===========================================================
+  var lists=bd.getElementsByTagName("li");//==================================
+  //遍历所有的span标签，添加点击事件
+  for(var i=0;i<spans.length;i++){
+      //点击之前就把索引保存到span标签中=========================================
+      spans[i].setAttribute("index",i);//======================================
+      spans[i].onclick=function () {
+          //第一件事所有的span的类样式全部移除
+          for(var j=0;j<spans.length;j++){
+              spans[j].removeAttribute("class");
+          }
+          //第二件事，当前被点击的span应用类样式
+          this.className="current";
+  
+          //span被点击时获取存储索引的值=========================================
+          var num=this.getAttribute("index");//=========================以下全部
+          //获取所有的li标签，每个li标签线全部隐藏
+          for(var k=0;k<lists.length;k++){
+              lists[k].removeAttribute("class");
+          }
+          //当前被点击的span标签对应的li标签显示
+          lists[num].className="current";
+      }
+  }
+  ```
