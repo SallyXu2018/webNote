@@ -39,4 +39,4 @@
 
 ## DOM（document object model）： 文档对象模型
 
-### [DOM基础概念及基础练习总结](https://github.com/SallyXu2018/webNote/blob/master/Js/DOM.md)
+### [DOM基础概念及基础练习总结](https://github.com/SallyXu2018/webNote/blob/master/Web%20Api.md)
