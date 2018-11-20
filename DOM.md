@@ -1,4 +1,4 @@
-DOM：文档对象模型
+# DOM：文档对象模型
 
 # 名词的基本概念
 
@@ -135,33 +135,9 @@ document.querySelector("选择器的名字")；
 
 document.querySelectorAll("选择器的名字")；
 
-
-
-# 兼容代码1（使innerText在IE8中兼容）
-
-```js
-//设置任意的标签中的任意文本内容  设置没有返回值
-function setInnerText(element,text) {
-    //判断这个浏览器是否支持这个属性--------------------------------->undefined
-    if(typeof element.textContent=="undefined"){//浏览器不支持
-        element.innerText=text;
-    }else{//浏览器支持
-        element.textContent=text;
-    }
-}
-//获取任意标签中的内容
-function getInnerText(element) {
-    if(typeof  element.textContent=="undefined"){
-        return element.innerText;
-    }else {
-            return element.textContent;
-    }
-}
-```
-
-
-
 # day2-练习总结
+
+- 兼容代码1、2（使innerText在IE8中兼容）
 
 - 禁用文本框，设置disabled属性
 
@@ -294,48 +270,18 @@ function getInnerText(element) {
 
 ### document.createElement("标签的名字");
 
-# 兼容代码2（获取任意一个父级元素的第一个子级元素）
-
-```js
-function getFirstElementChild(element) {
-    if(element.firstElementChild){//true 支持
-        return element.firstElementChild;
-    }else{
-        var node=element.firstChild;
-        while (node&&node.nodeType!=1){
-            node=node.nextSibling;
-        }
-        return node;
-    }
-}
-```
-
-# 兼容代码3（获取任意一个父级元素的最后一个子级元素）
-
-```js
-function getLastElementChild(element) {
-    if(element.lastElementChild){//true 支持
-        return element.lastElementChild;
-    }else{
-        var node=element.lastChild;
-        while (node&&node.nodeType!=1){
-            node=node.previousSibling;
-        }
-        return node;
-    }
-}
-```
-
-
-
 # day3-练习总结
 
+- 兼容代码3（获取任意一个父级元素的第一个子级元素）
+- 兼容代码4（获取任意一个父级元素的最后一个子级元素）
 - element.firstChild-->谷歌火狐获取的是第一个子节点,IE8获取的是第一个子元素
   element.firstElementChild-->谷歌火狐获取的是第一个子元素,IE8不支持
 - 第一个节点和第一个元素的获取的代码在IE8中不支持
   最后一个节点和最后一个元素的获取的代码在IE8中不支持
   前一个节点和前一个元素的获取的代码在IE8中不支持
   后一个节点和后一个元素的获取的代码在IE8中不支持
+- 兼容代码5（为任意元素绑定任意的事件）
+- 兼容代码6（为任意元素解除绑定任意的事件）
 - 案例全选和全不选
 
 <div class="wrap">
@@ -367,6 +313,8 @@ function getLastElementChild(element) {
         </tbody>
     </table>
 </div>
+
+
 
 ```js
 //获取全选的这个复选框
@@ -442,34 +390,29 @@ my$("btn").onclick=function(){
 			}
 ```
 
-# 为元素绑定事件（DOM）的两种方式，不兼容
+# 为元素绑定事件（DOM）
 
-### 1.对象.addEventListen
+### 1.对象.addEventListen("事件类型"，事件处理函数，false);
+
+------------------------------------------------------------------------------------------------------IE8不支持
 
 为同一个元素绑定多个相同的点击事件
 参数1：事件的类型---事件的名字，没有on
 参数2：事件处理函数---函数（命名函数，匿名函数）
-参数3：布尔类型，目前就写false---诶呦为什么，不解释，明天说er("事件类型"，事件处理函数，false);---IE8不支持
+参数3：布尔类型，目前就写false---诶呦为什么，不解释，明天说er("事件类型"，事件处理函数，false);-
 
-### 2.对象.attachEvent("有on的事件类型"，事件处理函数);---谷歌、火狐不支持
+这个中调用的的this是 当前绑定的对象
+
+### 2.对象.attachEvent("有on的事件类型"，事件处理函数);
+
+----------------------------------------------------------------------------------------------------谷歌、火狐不支持
 
 参数1：事件类型---事件名字，有on
 参数2：事件处理函数---函数（命名函数，匿名函数）
 
-# 兼容代码4（为任意元素绑定任意的事件）
+这个中调用的的this是window
 
-```js
-function addEventListener(element,type,fn){
-				//判断浏览器是否支持这个方法
-				if(element.addEventListener){
-					element.addEventListener(type,fn,false);
-				}else if(element.attachEvent){
-					element.attachEvent("on"+type,fn);
-				}else{
-					element["on"+type]=fn;
-				}
-			}
-```
+### 3.对象.on事件名字=事件处理函数;
 
 
 
@@ -482,4 +425,258 @@ function addEventListener(element,type,fn){
 替换子元素：.replaceChild（）
 
 移除父级中的第一个子元素：.removerChild（）
+
+# 为元素解除绑定事件（DOM）
+
+注意：用什么方式绑定事件，就应该用对应的方式解绑事件
+
+第一种方式：
+
+对象.on事件名字=事件处理函数；----->绑定事件 
+
+对象.on事件名字=null；
+
+第二种方式：
+
+对象.addEventListen("事件类型"，命名函数，false);----->绑定事件 
+
+对象.removeEventListen("事件类型"，命名函数，false);
+
+第三种方式：
+
+对象.attachEvent("有on的事件类型"，命名函数);----->绑定事件 
+
+对象.detachEvent("有on的事件类型"，命名函数);
+
+# 事件冒泡
+
+### 定义
+
+多个元素冒泡，有层次关系，都注册了相同的事件，如果里面的元素的事件触发了,外面的元素的该事件自动触发了----->由内向外
+
+### 如何阻止事件冒泡
+
+window.event.cancelBubble=true;IE8、谷歌支持，火狐不支持
+e.stopPropagation();火狐、谷歌、IE11支持，IE8不支持
+
+### 事件有三个阶段
+
+##### 1.事件的捕获阶段：从外向内
+
+##### 2.事件目标阶段
+
+##### 3.事件冒泡阶段：从里向外
+
+##### 注意
+
+- 事件的捕获阶段和冒泡阶段不可以同时出现
+- 通过e.eventPhase这个属性可以知道当前的事件是什么阶段的：如果这个属性的值是1----->事件的捕获阶段，2----->事件目标阶段，3----->事件冒泡阶段
+- addEventListener中的第三个参数是控制事件阶段的，一般默认都是冒泡阶段false，很少用捕获阶段true
+
+### 为元素绑定事件
+
+addEventListener("没有on的事件类型",事件处理函数,控制事件阶段的)
+事件触发过程中，可能会出现事件冒泡的效果，
+
+### 为阻止事件冒泡
+
+1 window.event.cancelBubble=true;谷歌、IE8支持,火狐不支持
+window.event就是一个对象，是IE中的标准
+
+2 e.stopPropagation();谷歌、火狐支持，IE8不支持
+window.event和e都是事件参数对象，一个是IE标准，一个是火狐的标准
+事件参数e在IE8浏览器中是不存在的，此时用window.event来代替
+
+```js
+//三个嵌套得div，最外面的div的id为dv1一次嵌套
+//同时注册点击事件
+var objs=[my$("dv1"),my$("dv2"),my$("dv3")];
+//遍历注册事件
+objs.forEach(function(e){
+   //为每个元素绑定事件
+   e.addEventListener("click",function(){
+      console.log(this.id+"--->"+e.eventPhase);//通过e.eventPhase这个属性可以知道当前的事件是什么阶段的：如果这个属性的值是1----->事件的捕获阶段，2----->事件目标阶段，3----->事件冒泡阶段
+   },false);//addEventListener中的第三个参数是控制事件阶段的，一般默认都是冒泡阶段false，很少用捕获阶段true
+});
+//输出id结果为321，eventphase结果为322
+```
+
+# day4-练习总结
+
+- 案例：为同一个元素绑定多个不相同事件,指向同一个事件处理函数
+
+```js
+my$("btn").onclick=f1;
+my$("btn").onmouseover=f1;
+my$("btn").onmouseout=f1;
+function f1(e) {
+   console.log(e);
+   switch(e.type){
+      case "click":alert("aaaa");break;
+      case "mouseover":this.style.backgroundColor="hotpink";break;
+      case "mouseout":this.style.backgroundColor="white";break;
+   }
+}
+```
+
+- 案例：百度搜索框（搜索时，输入关键字会弹出下拉框提示相应的搜索内容）
+
+```js
+var keyWords=["苹果有什么营养","今天多少度","今天穿什么","今天还好吗","你好啊","今日新闻","今日报道","你吃饭了吗","谁最漂亮啊"];
+//获取文本框，注册键盘抬起事件
+my$("txt").onkeyup=function () {
+    //==========bug1，输入多个字的时候删除一个字会出现两个div==============
+   //每一次的键盘抬起都判断这个页面中有没有这个div（解决bug1）
+   if (my$("dv")){
+       //删除一次
+      my$("box").removeChild(my$("dv"));
+   }
+   //console.log("aaaaaa");//测试抬起事件
+   //获取文本框输入的内容
+   var text=this.value;
+          var tempArr=[];//临时数组，存放对应上的数据
+   //把文本框输入的内容和数组中每个数据对比
+   for(var i=0;i<keyWords.length;i++){
+       //是否是最开始出现的
+       if(keyWords[i].indexOf(text)==0){
+           tempArr.push(keyWords[i]);//追加
+      }
+   }
+   //console.log(tempArr.length);//临时数组有数据
+   console.log(tempArr);
+   //============bug2，文本框、临时数组都为空时，仍旧有下拉框================
+   //如果文本框是空的，临时数组也是空的，不用创建div
+   if(this.value.length==0||tempArr.length==0){
+       //如果页面中有这个div删除这个div
+      if(my$("dv")){
+          my$("box").removeChild(my$("dv"))
+      }
+      return;
+   }
+   //遍历临时数组，创建div。把div放在名为box的div中
+   var dvObj=document.createElement("div");
+   my$("box").appendChild(dvObj);
+   dvObj.id="dv";
+   dvObj.style.width="141px";
+   dvObj.style.border="1px solid #ccc";
+
+   //循环遍历临时数组，创建对应的p标签
+   for(var i=0;i<tempArr.length;i++){
+       //创建p标签
+      var pObj=document.createElement("p");
+      //把p添加到名为dv的div标签中
+      my$("dv").appendChild(pObj);
+      setInnerText(pObj,tempArr[i]);
+      pObj.style.margin="3px";
+      pObj.style.padding=0;
+      pObj.style.cursor="pointer";
+      //鼠标进入
+      pObj.onmouseover=function () {
+          this.style.backgroundColor="pink";
+      };
+      //鼠标离开
+      pObj.onmouseout=function (ev) {
+          this.style.backgroundColor="";
+      };
+
+   }
+
+      };
+```
+
+
+
+
+
+
+
+# 兼容代码
+
+### 1 设置任意的标签中的任意文本内容  
+
+设置没有返回值（使innerText在IE8中兼容）
+
+```js
+function setInnerText(element,text) {
+    //判断这个浏览器是否支持这个属性--------------------------------->undefined
+    if(typeof element.textContent=="undefined"){//浏览器不支持
+        element.innerText=text;
+    }else{//浏览器支持
+        element.textContent=text;
+    }
+}
+```
+
+### 2 获取任意标签中的内容
+
+```js
+function getInnerText(element) {
+    if(typeof  element.textContent=="undefined"){
+        return element.innerText;
+    }else {
+            return element.textContent;
+    }
+}
+```
+
+### 3 获取任意一个父级元素的第一个子级元素
+
+```js
+function getFirstElementChild(element) {
+    if(element.firstElementChild){//true 支持
+        return element.firstElementChild;
+    }else{
+        var node=element.firstChild;
+        while (node&&node.nodeType!=1){
+            node=node.nextSibling;
+        }
+        return node;
+    }
+}
+```
+
+### 4 获取任意一个父级元素的最后一个子级元素
+
+```js
+function getLastElementChild(element) {
+    if(element.lastElementChild){//true 支持
+        return element.lastElementChild;
+    }else{
+        var node=element.lastChild;
+        while (node&&node.nodeType!=1){
+            node=node.previousSibling;
+        }
+        return node;
+    }
+}
+```
+
+### 5 为任意元素绑定任意的事件
+
+```js
+function addEventListener(element,type,fn){
+	//判断浏览器是否支持这个方法
+	if(element.addEventListener){
+		element.addEventListener(type,fn,false);
+	}else if(element.attachEvent){
+		element.attachEvent("on"+type,fn);
+	}else{
+		element["on"+type]=fn;
+	}
+}
+```
+
+### 6 为任意元素解除绑定任意的事件
+
+```js
+function removeEventListener(element,type,fn){
+	if(element.removeEventListener){
+		element.removeEventListener(type,fn,false);
+	}else if(element.detachEvent){
+		element.detachEvent(type,fn);
+	}else{
+		element["on"+type]=null;
+	}
+}
+```
 
