@@ -15,7 +15,7 @@
 
 
 
-### js分三个部分
+### JavaScript分三个部分
 
 ##### ECMAScript标准：js的基本语法
 
