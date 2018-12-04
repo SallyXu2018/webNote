@@ -41,4 +41,4 @@
 
 ### [DOM基础概念及基础练习总结](https://github.com/SallyXu2018/webNote/blob/master/Js/DOM.md)
 
-### [BOM基础概念及基础练习总结]
+### [BOM基础概念及基础练习总结](https://github.com/SallyXu2018/webNote/blob/master/Js/BOM.md)
