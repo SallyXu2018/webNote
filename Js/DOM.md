@@ -2,9 +2,11 @@
 
 # DOM：文档对象模型
 
-## 概念
+## DOM概念
 
 在网页上，组织页面（或文档）的对象被组织在一个树形结构中，用来表示文档中对象的标准模型
+
+## DOM的顶级对象document
 
 ## 作用
 
@@ -90,11 +92,15 @@
 
 #### 鼠标离开事件
 
-.onmouseleave=function （）{}
+.onmouseout=function （）{}
 
 #### 鼠键盘抬起事件
 
 .onkeyup=function （）{}
+
+#### 元素的滚动事件
+
+.onscroll=function（）{}
 
 ## 总结样式操作的不同的方式
 
