@@ -17,7 +17,7 @@
 
 ### JavaScript分三个部分
 
-##### ECMAScript标准：js的基本语法
+##### ECMAScript标准：JavaScript的基本语法
 
 ##### DOM（document object model）： 文档对象模型
 
@@ -31,7 +31,7 @@
 程序员用的浏览器推荐：MDN
 
 
-## ECMAScript标准：js的基本语法
+## ECMAScript标准：JavaScript基本语法
 ### [变量与进制](https://github.com/SallyXu2018/webNote/blob/master/Js/blandjzandlx.md)
 ### [流程控制与数组](https://github.com/SallyXu2018/webNote/blob/master/Js/lcandsz.md)
 ### [函数](https://github.com/SallyXu2018/webNote/blob/master/Js/function.md)
@@ -45,3 +45,8 @@
 ## BOM（browser object model）：浏览器对象模型 
 
 ### [BOM基础概念及基础练习总结](https://github.com/SallyXu2018/webNote/blob/master/Js/BOM.md)
+
+
+## JavaScript高级
+### [JavaScript高级总结]（）
+
