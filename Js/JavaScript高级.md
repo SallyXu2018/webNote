@@ -1,4 +1,4 @@
-### 复习
+复习
 
 #### 创建对象的三种方式
 
@@ -170,9 +170,7 @@ console.log(per instanceof Object);
 
 ### 原型（既是属性又是方法）
 
-#### 作用
-
-一：数据共享，节省内存空间
+#### 作用1：数据共享，目的：节省内存空间
 
 ```js
 /*
@@ -184,7 +182,11 @@ console.log(per instanceof Object);
 * */
 ```
 
-#### 构造函数、原型对象、实例对象之间的关系
+#### 作用2：为了实现继承，目的：节省内存空间
+
+#### 关于构造函数、实例对象、原型对象、及其属性的一些问题
+
+##### 1.构造函数、原型对象、实例对象之间的关系
 
 ```js
 /**
@@ -197,13 +199,21 @@ console.log(per instanceof Object);
  */
 ```
 
-#### 什么样的数据是需要写在原型中的？
+##### 2.什么样的数据是需要写在原型中的？
 
 需要共享的数据写在原型对象中
 
+##### 3.实例对象和原型对象属性重名问题
 
+实例对象访问这个属性,应该先从实例对象中找,找到了就直接用，找不到就去指向的原型对象中找,找到了就使用,找不到呢?=====undefined
 
-### 局部变量变成全局变量
+因为JS是一门动态类型的语言,对象没有什么,只要点了,那么这个对象就有了这个东西,没有这个属性,只要对象.属性名字,对象就有这个属性了,但是,该属性没有赋值,所以,结果是:undefined
+
+##### 4.就想改变原型对象中属性的值,怎么办?
+
+直接通过原型对象.属性=值;可以改变
+
+##### 5.局部变量变成全局变量
 
 ```js
 //函数的自调用
@@ -227,7 +237,9 @@ console.log(num);//报错
 console.log(num);
 ```
 
-### 案例-把随机数对象暴露给Windows成为全局变量
+### 案例
+
+#### 1.把随机数对象暴露给Windows成为全局变量
 
 ```js
 //通过自调用函数长生一个随机数对象，在自调用函数外面，调用该随机数对象方法产生随机数
@@ -247,9 +259,9 @@ console.log(rm.getRandom(0,5));
 
 
 
-### 面向对象游戏案例：贪吃蛇
+#### 2.贪吃蛇
 
-#### 游戏思路
+##### 游戏思路
 
 ```js
 /*
@@ -281,7 +293,7 @@ console.log(rm.getRandom(0,5));
 * */
 ```
 
-#### 游戏代码
+##### 游戏代码
 
 ```js
 <script>
@@ -526,30 +538,372 @@ console.log(rm.getRandom(0,5));
 
 
 
+### 原型链
 
+#### 定义
+
+```js
+是一种关系，实例对象和原型对象之间的关系，关系是通过（__proto__）来联系的
+```
+
+#### 关于原型链指向的一些问题
+
+##### 1.原型的指向是否可以改变？是
+
+构造函数中的this是实例对象
+
+原型对象中方法中的this也是实例对象
+
+```js
+实例对象的原型__proto__指向的是该对象所在的构造函数的原型对象；
+构造函数的原型对象(prototype)指向如果改变了,实例对象的原型(__proto__)指向也会发生改变；
+
+```
+
+##### 2.如果原型指向改变了,那么就应该在原型改变指向之后添加原型方法
+
+##### 3.原型链最终指向了哪里？
+
+```js
+原型最终指向的的是Object的prototype中的__proto__是null
+```
+
+推导过程
+
+```js
+//实例对象中有__proto__原型
+//构造函数中有prototype原型
+//prototype是对象
+//所以,prototype这个对象中也有__proto__,那么指向了哪里
+//实例对象中的__proto__指向的是构造函数的prototype
+//所以,prototype这个对象中__proto__指向的应该是某个构造函数的原型prototyp
+function Person() {
+
+    }
+Person.prototype.eat=function () {
+      console.log("吃东西");
+    };
+
+ console.log(per.__proto__==Person.prototype);
+    console.log(per.__proto__.__proto__==Person.prototype.__proto__);
+    console.log(Person.prototype.__proto__==Object.prototype);
+    console.log(Object.prototype.__proto__);
+//per实例对象的__proto__------->Person.prototype;Person.prototype的__proto__---->Object.prototype;Object.prototype的__proto__是null
+```
+
+### 一个神奇的原型链
+
+```js
+<script>
+  var divObj=document.getElementById("dv");
+  console.dir(divObj);
+//divObj.__proto__---->HTMLDivElement.prototype的__proto__--->HTMLElement.prototype的__proto__---->Element.prototype的__proto__---->Node.prototype的__proto__---->EventTarget.prototype的__proto__---->Object.prototype没有__proto__,所以,Object.prototype中的__proto__是null
+
+</script>
+```
+
+### 面向对象编程思想
+
+面向对象编程思想:根据需求,分析对象,找到对象有什么特征和行为,通过代码的方式来实现需求,要想实现这个需求,就要创建对象,要想创建对象,就应该显示有构造函数,然后通过构造函数来创建对象.,通过对象调用属性和方法来实现相应的功能及需求,即可。
+
+首先JS不是一门面向对象的语言,JS是一门基于对象的语言,那么为什么学习js还要学习面向对象,因为面向对象的思想适合于人的想法,编程起来会更加的方便,及后期的维护....
+
+ 面向对象的编程语言中有类(class)的概念(也是一种特殊的数据类型),但是JS不是面向对象的语言,所以,JS中没有类(class),但是JS可以模拟面向对象的思想编程,JS中会通过构造函数来模拟类的概念(class)
+
+### 面向对象的特性
+
+#### 封装
+
+一个值存储在一个变量中--封装
+
+一坨重复代码放在一个函数中--封装
+
+一系列的属性放在一个对象中--封装
+
+一些功能类似的函数(方法)放在一个对象中--封装
+
+好多相类似的对象放在一个js文件中---封装
+
+#### 继承
+
+首先继承是一种关系,类(class)与类之间的关系,JS中没有类,但是可以通过构造函数模拟类,然后通过原型来实现继承
+
+继承也是为了数据共享,js中的继承也是为了实现数据共享
+
+#### 多态
+
+一个对象有不同的行为,或者是同一个行为针对不同的对象,产生不同的结果,要想有多态,就要先有继承,js中可以模拟多态,但是不会去使用,也不会模拟,
 
 ## 继承
 
+### 如何实现继承
 
 
 
 
 
+### 原型的方式继承
+
+为了数据共享,改变原型指向,做到了继承---通过改变原型指向实现的继承；
+缺陷:因为改变原型指向的同时实现继承,直接初始化了属性，继承过来的属性的值都是一样的了,所以,这就是问题；
+只能重新调用对象的属性进行重新赋值,
+
+解决方案:继承的时候,不用改变原型的指向,直接调用父级的构造函数的方式来为属性赋值就可以了------借用构造函数:把要继承的父级的构造函数拿过来,使用一下就可以了
+
+```js
+function Person(name,age,sex,weight) {
+  this.name=name;
+  this.age=age;
+  this.sex=sex;
+  this.weight=weight;
+}
+Person.prototype.sayHi=function () {
+  console.log("您好");
+};
+function Student(score) {
+  this.score=score;
+}
+//希望人的类别中的数据可以共享给学生---继承
+Student.prototype=new Person("小明",10,"男","50kg");
+
+var stu1=new Student("100");
+console.log(stu1.name,stu1.age,stu1.sex,stu1.weight,stu1.score);
+stu1.sayHi();
+
+var stu2=new Student("120");
+stu2.name="张三";
+stu2.age=20;
+stu2.sex="女";
+console.log(stu2.name,stu2.age,stu2.sex,stu2.weight,stu2.score);
+stu2.sayHi();
+```
+
+### 借用构造函数继承
+
+借用构造函数:构造函数名字.call(当前对象,属性,属性,属性....);
+解决了属性继承,并且值不重复的问题
+
+```js
+function Person(name, age, sex, weight) {
+      this.name = name;
+      this.age = age;
+      this.sex = sex;
+      this.weight = weight;
+    }
+    Person.prototype.sayHi = function () {
+      console.log("您好");
+    };
+    function Student(name,age,sex,weight,score) {
+      //借用构造函数
+      Person.call(this,name,age,sex,weight);
+      this.score = score;
+    }
+    var stu1 = new Student("小明",10,"男","10kg","100");
+    console.log(stu1.name, stu1.age, stu1.sex, stu1.weight, stu1.score);
+	var stu2 = new Student("小红",20,"女","20kg","120");
+	console.log(stu2.name, stu2.age, stu2.sex, stu2.weight, stu2.score);
+```
+
+缺陷:父级类别中的方法不能继承
+
+解决方案:组合继承
+
+### 组合继承
+
+#### 实质：原型继承+借用构造函数继承
+
+```js
+function Person(name,age,sex) {
+      this.name=name;
+      this.age=age;
+      this.sex=sex;
+    }
+    Person.prototype.sayHi=function () {
+      console.log("阿涅哈斯诶呦");
+    };
+    function Student(name,age,sex,score) {
+      //借用构造函数:属性值重复的问题
+      Person.call(this,name,age,sex);
+      this.score=score;
+    }
+    //改变原型指向----继承
+    Student.prototype=new Person();//不传值
+    Student.prototype.eat=function () {
+      console.log("吃东西");
+    };
+    var stu=new Student("小黑",20,"男","100分");
+    console.log(stu.name,stu.age,stu.sex,stu.score);
+    stu.sayHi();
+    stu.eat();
+    var stu2=new Student("小黑黑",200,"男人","1010分");
+    console.log(stu2.name,stu2.age,stu2.sex,stu2.score);
+    stu2.sayHi();
+    stu2.eat();
+```
 
 
 
-## 函数进阶
+### 拷贝继承
+
+#### 实质：把一个对象中的属性或者方法直接通过循环遍历的方式复制到另一个对象中
+
+```js
+ function Person() {
+    }
+    Person.prototype.age=10;
+    Person.prototype.sex="男";
+    Person.prototype.height=100;
+    Person.prototype.play=function () {
+      console.log("玩的好开心");
+    };
+    var obj2={};
+    //Person的构造中有原型prototype,prototype就是一个对象,那么里面,age,sex,height,play都是该对象中的属性或者方法
+for(var key in Person.prototype){
+  obj2[key]=Person.prototype[key];
+}
+console.dir(obj2);
+obj2.play();
+```
 
 
 
 
 
+## 函数进阶（函数也是对象，对象不一定是函数）
+
+```js
+	//函数的角色:
+    //函数的声明
+    function f1() {
+      console.log("我是函数");
+    }
+    f1();
+    //函数表达式
+    var ff=function () {
+      console.log("我也是一个函数");
+    };
+    ff();
+```
 
 
 
+### 函数的不同的表现方式
+
+#### 函数声明
+
+```js
+
+   if(true){
+      function f1() {
+        console.log("哈哈,我又变帅了");
+      }
+    }else{
+      function f1() {
+        console.log("小苏好猥琐");
+      }
+    }
+    f1();
+```
+
+#### 函数表达式
+
+```js
+var ff;
+if(true){
+  ff=function () {
+    console.log("哈哈,我又变帅了");
+  };
+}else{
+  ff=function () {
+    console.log("小苏好猥琐");
+  };
+}
+ff();
+
+```
+
+函数声明如果放在if-else的语句中,在IE8的浏览器中会出现问题
+以后宁愿用函数表达式,都不用函数声明
 
 
 
+### 函数中的this
 
+- 普通函数中的this是谁?-----window
+- 对象.方法中的this是谁?----当前的实例对象
+- 定时器方法中的this是谁?----window
+- 构造函数中的this是谁?-----实例对象
+- 原型对象方法中的this是谁?---实例对象
+
+```js
+//普通函数-----window
+   function f1() {
+     console.log(this);
+   }
+  f1();
+
+//定时器中的this----window
+   setInterval(function () {
+     console.log(this);
+   },1000);
+
+//构造函数-----实例对象
+   function Person() {
+     console.log(this);
+
+//对象的方法----当前的实例对象
+     this.sayHi=function () {
+       console.log(this);
+     };
+
+//原型中的方法---实例对象
+   Person.prototype.eat=function () {
+     console.log(this);
+     this.sayHi=function () {//对象的方法----当前的实例对象
+       console.log(this);
+     };
+   };
+   var per=new Person();
+   console.log(per);
+   per.sayHi();//对象的方法----当前的实例对象
+   per.eat();
+```
+
+### 严格模式
+
+```js
+"use strict";//严格模式
+function f1() {
+  console.log(this);//this----->undefined
+}
+f1();
+```
+
+### 函数的调用的不同的方式
+
+```js
+//普通函数
+function f1() {
+    console.log("aaa");
+}
+f1();
+
+//构造函数---通过new 来调用,创建对象
+function F1() {
+    console.log("bbb");
+}
+var f=new F1();
+
+//对象的方法
+function Person() {
+    this.play=function () {
+        console.log("ccc");
+    };
+}
+var per=new Person();
+per.play();
+```
+
+### 数组中的函数如何调用
 
 ## 正则表达式
