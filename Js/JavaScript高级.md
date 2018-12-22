@@ -710,7 +710,9 @@ function Person(name, age, sex, weight) {
 
 ### 组合继承
 
-#### 实质：原型继承+借用构造函数继承
+#### 实质
+
+原型继承+借用构造函数继承
 
 ```js
 function Person(name,age,sex) {
@@ -745,7 +747,9 @@ function Person(name,age,sex) {
 
 ### 拷贝继承
 
-#### 实质：把一个对象中的属性或者方法直接通过循环遍历的方式复制到另一个对象中
+#### 实质
+
+把一个对象中的属性或者方法直接通过循环遍历的方式复制到另一个对象中
 
 ```js
  function Person() {
@@ -767,9 +771,9 @@ obj2.play();
 
 
 
+## 函数进阶
 
-
-## 函数进阶（函数也是对象，对象不一定是函数）
+（函数也是对象，对象不一定是函数）
 
 ```js
 	//函数的角色:
@@ -905,5 +909,262 @@ per.play();
 ```
 
 ### 数组中的函数如何调用
+
+```js
+function f1() {
+    
+}
+console.log(typeof f1);//function
+//函数也是一种数据类型
+//数组可以存储任何类型的数据
+var arr=[
+    function () {
+        console.log("快乐");
+    },
+    function () {
+        console.log("开心");
+    }
+    ,
+    function () {
+        console.log("健康");
+    }
+    ,
+    function () {
+        console.log("安全");
+    },
+    function () {
+        console.log("如意");
+    }
+];
+//回调函数:函数作为参数使用
+arr.forEach(function (ele) {
+    ele();
+});
+```
+
+### 方法（重点）
+
+#### apply和call方法的使用
+
+apply和call方法实际上并不在函数这个实例对象中,而是在Function的prototype中
+
+##### apply的使用语法
+
+函数名字.apply(对象,[参数1,参数2,...]);
+方法名字.apply(对象,[参数1,参数2,...]);
+
+##### call的使用语法
+
+函数名字.call(对象,参数1,参数2,...);
+方法名字.call(对象,参数1,参数2,...);
+
+##### 作用
+
+改变this的指向，只要是想使用别的对象的方法,并且希望这个方法是当前对象的,那么就可以使用apply或者是call的方法改变this的指向
+
+##### 不同的地方
+
+参数传递的方式是不一样的
+
+#### bind方法的使用
+
+##### 使用语法
+
+函数名字.bind(对象,参数1,参数2,...);---->返回值是复制之后的这个函数
+方法名字.bind(对象,参数1,参数2,...);---->返回值是复制之后的这个方法
+
+参数可以在复制的时候传进去,也可以在复制之后调用的时候传入进去
+
+##### 作用
+
+来复制一份
+
+```js
+function Person(age) {
+    this.age=age;
+}
+Person.prototype.play=function () {
+    console.log(this.age+"===>"+this);
+};
+function Student(age) {
+    this.age=age;
+}
+var per=new Person(10);
+var stu=new Student(20);
+//复制了一份---->改变了this的指向
+var ff=per.play.bind(stu);
+ff();//20 object
+```
+
+##### bind方法的应用
+
+```js
+//通过对象 调用方法 显示随机数
+function ShowRandom() {
+    this.number=parseInt(Math.random()*10+1);
+}
+ShowRandom.prototype.show1=function () {
+    //改变了定时器中的this的指向了,本来应该是window,现在是实例对象了
+    setInterval(this.show2.bind(this),1000);
+};
+ShowRandom.prototype.show2=function () {
+    console.log(this.number);
+};
+var sr=new ShowRandom();
+sr.show1();
+```
+
+### 函数中的成员（了解）
+
+name属性：函数的名字,name属性是只读的,不能修改
+arguments属性：实参的个数
+length属性：函数定义的时候形参的个数
+caller属性：调用(f1函数在f2函数中调用的,所以,此时调用者就是f2)
+
+### 高阶函数
+
+#### 函数作为参数使用的例子
+
+函数作为参数的时候,如果是命名函数,那么只传入命名函数的名字,没有括号
+
+```js
+function f3(fn) {
+    setInterval(function () {
+        console.log("a");
+        fn();
+        console.log("b");
+    },1000)
+}
+f3(function () {
+    console.log("ccc");
+})
+```
+
+#### 函数作为返回值使用的例子
+
+获取某个对象类型是不是你传入的类型
+
+```js
+//type--是变量---是参数---"[Object Array]"
+//obj--是变量---是参数---"[10,20,30]"
+//判断这个对象和传入的类型是不是同一个类型
+function Func(type) {
+    return function (obj) {
+        return Object.prototype.toString.call(obj)==type;
+    }
+}
+var ff=new Func("[object Array]");
+var result=ff([10,20,30]);
+console.log(result);
+```
+
+##### 综合案例
+
+```js
+//排序,每个文件都有名字，大小,时间,都可以按照某个属性的值进行排序
+
+//三部电影,电影有名字,大小,上映时间
+function File(name,size,time) {
+    this.name=name;
+    this.size=size;
+    this.time=time;
+}
+var f1 = new File("jack.avi", "400M", "1997-12-12");
+var f2 = new File("tom.avi", "200M", "2017-12-12");
+var f3 = new File("xiaosu.avi", "800M", "2010-12-12");
+var arr = [f1, f2, f3];
+function fn(attr) {
+    return function getSort(obj1,obj2) {
+        //函数作为返回值
+        if(obj1[attr]>obj2[attr]){
+            return 1;
+        }else if(obj1[attr]==obj2[attr]){
+            return 0;
+        }else {
+            return -1;
+        }
+    }
+}
+var ff=fn("size");
+arr.sort(ff);
+for (var i=0;i<arr.length;i++){
+    console.log(arr[i].name+"---"+arr[i].size+"---"+arr[i].time);
+}
+```
+
+### 作用域，作用域链，预解析
+
+```js
+//变量---->局部变量和全局变量,
+//作用域(变量的使用范围)---->局部作用域和全局作用域
+//js中没有块级作用域------一对括号中定义的变量,这个变量可以在大括号外面使用
+//函数中定义的变量是局部变量
+
+// 作用域链:变量的使用,从里向外,层层的搜索,搜索到了就可以直接使用了
+// 层层搜索,搜索到0级作用域的时候,如果还是没有找到这个变量,结果就是报错
+
+// 预解析:就是在浏览器解析代码之前,把变量的声明和函数的声明提前(提升)到该作用域的最上面
+//变量的提升
+console.log(num);
+var num=100;
+
+//函数的声明被提前了
+f1();
+function f1() {
+    console.log("这个函数,执行了");
+}
+
+f2();
+f2=function () {
+    console.log("小杨好帅哦");
+};//报错
+```
+
+### 闭包（重点）
+
+概念：函数A中,有一个函数B,函数B中可以访问函数A中定义的变量或者是数据,此时形成了闭包(这句话暂时不严谨)
+
+模式：函数模式的闭包,对象模式的闭包
+
+作用：缓存数据,延长作用域链
+
+优点：缓存数据
+
+缺点：缓存数据
+
+```js
+//函数模式的闭包
+function f1() {
+    var num=10;
+    function f2() {
+        console.log(num);
+    }
+    f2();
+}
+f1();
+//对象模式的闭包
+function f3() {
+    var num=20;
+    var obj={
+        age:num
+    };
+    console.log(obj.age);
+}
+f3();
+```
+
+#### 闭包案例
+
+
+
+### 沙箱
+
+
+
+### 递归（重点）
+
+
+
+
 
 ## 正则表达式
