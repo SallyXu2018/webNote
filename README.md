@@ -51,7 +51,7 @@
 ### [JavaScript高级总结](https://github.com/SallyXu2018/webNote/blob/master/Js/JavaScript%E9%AB%98%E7%BA%A7.md)
 
 ## jQuery
-### [jQuery笔记和总结]()
+### [jQuery笔记和总结](https://github.com/SallyXu2018/webNote/blob/master/Js/jQuery.md)
 
 
 ## 笔记汇总
