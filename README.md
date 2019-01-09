@@ -54,7 +54,7 @@
 ### [jQuery笔记和总结](https://github.com/SallyXu2018/webNote/blob/master/Js/jQuery.md)
 
 
-## 笔记汇总
-### [JavaScript基础](https://github.com/SallyXu2018/webNote/blob/master/Js/01JavaScript%E5%9F%BA%E7%A1%80.md)
-### [Web API](https://github.com/SallyXu2018/webNote/blob/master/Js/02-Web%20API.md)
-### [JavaScript高级]
+#### 笔记汇总
+##### [JavaScript基础](https://github.com/SallyXu2018/webNote/blob/master/Js/01JavaScript%E5%9F%BA%E7%A1%80.md)
+##### [Web API](https://github.com/SallyXu2018/webNote/blob/master/Js/02-Web%20API.md)
+##### [JavaScript高级]
