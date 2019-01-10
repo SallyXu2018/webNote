@@ -252,7 +252,7 @@ jQuery选择器虽然很多，但是选择器之间可以相互替代，就是�
 
 # 案例
 
-## 01-下拉菜单
+#### 01-下拉菜单
 
 ```js
 //this+children+mouseenter+mouseleave
@@ -275,7 +275,7 @@ mouseover：凡是经过注册事件对象及其子对象都会触发事件
 
 mouseenter：经过注册事件对象触发事件，经过其子对象不会触发事件，减少了事件触发次数
 
-## 02-突出展示
+#### 02-突出展示
 
 ```js
 //siblings+find
@@ -291,7 +291,7 @@ $(function () {
 })
 ```
 
-## 03-手风琴
+#### 03-手风琴
 
 ```js
 //next+parent
@@ -304,7 +304,7 @@ $(function () {
 })
 ```
 
-## 04-淘宝精品
+#### 04-淘宝精品
 
 ```js
 //index+eq
@@ -342,7 +342,7 @@ console.log(typeof $);//实质是function
 
 ## $的三种用法
 
-### 1.参数是一个function,入口函数
+#### 1.参数是一个function,入口函数
 
 ```js
 $(function () {
@@ -350,7 +350,7 @@ $(function () {
 });
 ```
 
-## 2.$(domobj) 把dom对象转换成jQuery对象
+#### 2.$(domobj) 把dom对象转换成jQuery对象
 
 ```js
 $(document).ready(function () {
@@ -358,8 +358,297 @@ $(document).ready(function () {
 });
 ```
 
-## 3.参数还可以是个字符串,用来找对象
+#### 3.参数还可以是个字符串,用来找对象
 
 ```js
 //$("div") $("#btn") $(".current")
 ```
+
+
+
+# jQuery操作样式
+
+## css操作
+
+### 设置单个样式
+
+```js
+$("li")
+    .css("backgroundColor","pink")
+    .css("color","hotpink")
+    .css("fontSize","32px")
+```
+
+### 设置多个样式
+
+```js
+$("li").css({
+    backgroundColor:"pink",
+    color:"hotpink",
+    fontSize:"32px"
+})
+```
+
+### 获取样式
+
+```js
+$("li").eq(0).css("fontSize","10px");
+$("li").eq(1).css("fontSize","8px");
+$("li").eq(2).css("fontSize","6px");
+console.log($("li").css("fontSize"));//10px
+//隐式迭代：
+// 设置操作的时候：会给jq内部的所有对象都设置上相同的值。
+// 获取的时候：只会返回第一个元素对应的值。
+```
+
+## class操作
+
+### .addClass(name):添加类
+
+### .removeClass(name):移除类
+
+### .hasClass(name):判断类
+
+### .toggleClass(name):切换
+
+### 案例：tab栏的切换
+
+```js
+$(function () {
+    $(".tab-item").mouseenter(function () {
+        $(this).addClass("active").siblings().removeClass("active");
+        var idx=$(this).index();
+        $(".main").eq(idx).addClass("selected").siblings().removeClass("selected");
+
+    })
+})
+```
+
+# jQuery操作属性
+
+```
+样式：在style里面写的，用css来操作
+属性：在里面里面写的，用attr方法操作
+```
+
+## attr操作
+
+使用方法和css一样
+
+### 设置单个属性
+
+### 设置多个属性
+
+### 获取属性
+
+## 案例：相册
+
+```js
+$(function () {
+    $("#imagegallery a").click(function () {
+        var src=$(this).attr("href");
+        $("#image").attr("src",src);
+
+        var des=$(this).attr("title");
+        $("#des").text(des);
+
+        return false;
+    })
+})
+```
+
+## prop操作
+
+在jQuery1.6之后，对于checked、selected、disabled这类boolean类型的属性来说，不能用attr方法，只能用prop方法。
+
+## 案例：全选和全不选
+
+```js
+$(function () {
+    $("#j_cbAll").click(function () {
+        $("#j_tb input").prop("checked",$(this).prop("checked"));
+
+    });
+    $("#j_tb input").click(function () {
+        var ckall=$("#j_tb input").length;
+        var ck=$("#j_tb input:checked").length;
+        if(ckall==ck){
+            $("#j_cbAll").prop("checked",true)
+        }else {
+            $("#j_cbAll").prop("checked",false)
+        }
+
+    })
+})
+```
+
+## removeAttr(name):移除某个属性
+
+# jQuery动画
+
+## 三组基本动画
+
+```
+show/hide   slideDown/slideUp/slideToggle  fadeIn/fadeOut/fadeToggle
+```
+
+## 案例：京东切换栏
+
+```js
+$(function () {
+    var count=0;
+ $(".arrow-right").click(function () {
+     count++;
+     if(count==$(".slider li").length){
+         count=0;
+     }
+     $(".slider li").eq(count).fadeIn().siblings("li").fadeOut();
+ });
+    $(".arrow-left").click(function () {
+        count--;
+        if(count==-1){
+            count=$(".slider li").length-1;
+        }
+        $(".slider li").eq(count).fadeIn().siblings("li").fadeOut();
+    })
+})
+```
+
+## 自定义动画
+
+```js
+animate(prop, [speed], [swing/linear], [callback])
+//第一个参数：对象，里面可以传需要动画的样式
+//第二个参数：speed 动画的执行时间
+//第三个参数：动画的执行效果 秋千/匀速
+//第四个参数：回调函数
+```
+
+## 动画队列与停止动画
+
+在同一个元素上执行多个动画，那么对于这个动画来说，后面的动画会放到动画队列中，等前面的动画执行。
+
+```js
+//stop方法：停止动画效果
+stop(clearQueue,jumpToEnd)
+//第一个参数：是否清除队列
+//第二个参数：是否跳转到最终队列即是否跳转到当前动画的最终效果
+//stop:停止当前正在执行的动画
+```
+
+## 案例：手风琴
+
+```js
+$(function () {
+    var $li=$("#box li");
+    for (var i=0;i<$li.length;i++){
+        $li.eq(i).css("backgroundImage","url(../images/"+(i+1)+"-"+(i+1)+".jpg)");
+    }
+    $("#box li").mouseenter(function () {
+        $(this).stop().animate({width:800}).siblings().stop().animate({width:100});
+    }).mouseleave(function () {
+        $li.stop().animate({width:240})
+    })
+})
+```
+
+
+
+# jQuery节点操作
+
+## 创建节点
+
+```
+$("<span></span>")
+```
+
+## 添加节点
+
+```
+append appendTo prepend prependTo after before
+```
+
+## 清空节点
+
+```
+empty
+```
+
+## 删除节点
+
+```
+remove
+```
+
+## 克隆节点
+
+```
+clone
+```
+
+## 案例
+
+### 城市选择
+
+```js
+$(function () {
+    $("#btn1").click(function () {
+        $("#src-city>option").appendTo("#tar-city")
+    });
+    $("#btn2").click(function () {
+        $("#src-city").append($("#tar-city>option"));
+    });
+    $("#btn3").click(function () {
+        $("#src-city>option:selected").appendTo("#tar-city")
+    });
+    $("#btn4").click(function () {
+        $("#src-city").append($("#tar-city>option:selected"));
+    });
+})
+```
+
+### 微博发布
+
+```js
+$(function () {
+
+    $("#btn").click(function () {
+        if($("#txt").val().trim().length==0){
+            return 0;
+        }
+        $("<li></li>").text($("#txt").val()).prependTo("#ul");
+        $("#txt").val("");
+    })
+})
+```
+
+### 弹幕效果
+
+```js
+$(function () {
+    var colors = ["red", "green", "hotpink", "pink", "cyan", "yellowgreen", "purple", "deepskyblue"]
+    //注册事件
+    $("#btn").click(function () {
+        var randomColor = parseInt(Math.random() * colors.length);
+        var randomY = parseInt(Math.random() * 400);
+        console.log(randomColor+"----------"+randomY);
+        $("<span></span>")//创建span
+            .text($("#text").val())//设置内容
+            .css("color", colors[randomColor])//设置颜色
+            .css("left", "1400px")//设置left值
+            .css("top", randomY)//设置top值
+            .animate({left: -500}, 10000, "linear", function () {
+                $(this).remove();
+            })//添加动画
+            .appendTo("#boxDom");
+        $("#text").val("");
+    });
+    $("#text").keyup(function (e) {
+        if(e.keyCode==13){
+            $("#btn").click();
+        }
+    })
+
+})
+```
+
