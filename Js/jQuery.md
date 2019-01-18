@@ -441,7 +441,7 @@ $(function () {
 
 ### 获取属性
 
-## 案例：相册
+案例：相册
 
 ```js
 $(function () {
@@ -461,7 +461,7 @@ $(function () {
 
 在jQuery1.6之后，对于checked、selected、disabled这类boolean类型的属性来说，不能用attr方法，只能用prop方法。
 
-## 案例：全选和全不选
+案例：全选和全不选
 
 ```js
 $(function () {
@@ -492,7 +492,7 @@ $(function () {
 show/hide   slideDown/slideUp/slideToggle  fadeIn/fadeOut/fadeToggle
 ```
 
-## 案例：京东切换栏
+### 案例：京东切换栏
 
 ```js
 $(function () {
@@ -536,7 +536,7 @@ stop(clearQueue,jumpToEnd)
 //stop:停止当前正在执行的动画
 ```
 
-## 案例：手风琴
+### 案例：手风琴
 
 ```js
 $(function () {
@@ -560,30 +560,35 @@ $(function () {
 
 ```
 $("<span></span>")
+
 ```
 
 ## 添加节点
 
 ```
 append appendTo prepend prependTo after before
+
 ```
 
 ## 清空节点
 
 ```
 empty
+
 ```
 
 ## 删除节点
 
 ```
 remove
+
 ```
 
 ## 克隆节点
 
 ```
 clone
+
 ```
 
 ## 案例
@@ -650,5 +655,370 @@ $(function () {
     })
 
 })
+```
+
+# jQuery特殊属性操作
+
+## val方法
+
+val方法用于设置和获取表单元素的值，例如input、textarea的值
+
+```js
+//设置值
+$("#name").val(“张三”);
+//获取值
+$("#name").val();
+```
+
+【案例：京东搜索.html】
+
+```js
+$(function () {
+ $("#txt").focus(function () {
+     if($(this).val()==="洋酒"){
+         $(this).val("");
+     }
+ })   ;
+ $("#txt").blur(function () {
+     if($(this).val()===""){
+         $(this).val("洋酒");
+     }
+ })
+})
+```
+
+## html方法与text方法
+
+html方法相当于innerHTML  text方法相当于innerText
+
+```js
+$(function () {
+ //html:innerHtml  text:innerText
+    console.log($("div").html());//<h3>im H3</h3>
+    console.log($("div").text());//im H3
+    $("div").html("<p>im P</p>");
+    $("div").text("<p>im P</p>");
+})
+```
+
+区别：html方法会识别html标签，text方法会那内容直接当成字符串，并不会识别html标签。
+
+## width方法与height方法
+
+设置或者获取高度
+
+```javascript
+//带参数表示设置高度
+$(“img”).height(200);
+//不带参数获取高度
+$(“img”).height();
+
+```
+
+获取网页的可视区宽高
+
+```javascript
+//获取可视区宽度
+$(window).width();
+//获取可视区高度
+$(window).height();
+```
+
+```js
+$(function () {
+    //获取div的宽度
+    console.log($("div").css("width"));//200px
+    console.log($("div").width());//200 width
+    console.log($("div").innerWidth());//width+padding
+    console.log($("div").outerWidth());//width+padding+border
+    console.log($("div").outerWidth(true));//width+padding+border+margin
+    //设置div宽度
+    $("div").width(40);
+    //获取页面可视区域的宽度和高度 resize()方法
+    $(window).resize(function () {
+        console.log("width:"+$(window).width());
+        console.log("height:"+$(window).height());
+        console.log("---------------------------")
+    })
+})
+```
+
+## scrollTop与scrollLeft
+
+设置或者获取垂直滚动条的位置
+
+```javascript
+//获取页面被卷曲的高度
+$(window).scrollTop();
+//获取页面被卷曲的宽度
+$(window).scrollLeft();
+```
+
+【案例：仿腾讯固定菜单栏案例】
+
+```js
+$(function () {
+    $(window).scroll(function () {
+        //判断卷曲的高度是否超过topPart的高度
+        //1.让navBar有个固定定位
+        //2.让mainPart有个margintop+navBar的高度
+        if($(window).scrollTop()>=$("#topPart").height()){
+            $("#navBar").addClass("fixed");
+            $("#mainPart").css("marginTop",$("#navBar").height()+10)
+        }else {
+            $("#navBar").removeClass("fixed");
+            $("#mainPart").css("marginTop",10)
+        }
+    })
+})
+```
+
+【案例：小火箭返航案例】
+
+```js
+$(function () {
+ //当页面超出1000px的时候让小火箭显示出来，如果小于1000px就让小火箭隐藏
+    $(window).scroll(function () {
+        if($(window).scrollTop()>=1000){
+            $(".actGotop").stop().fadeIn(700);
+        }else {
+            $(".actGotop").stop().fadeOut(700);
+        }
+    });
+    $(".actGotop").click(function () {
+        $("body,html").stop().animate({"scrollTop":0})
+    })
+});
+```
+
+## offset方法与position方法
+
+offset方法获取元素距离document的位置，position方法获取的是元素距离有定位的父元素的位置。
+
+```js
+//获取元素距离document的位置,返回值为对象：{left:100, top:100}
+$(selector).offset();
+//获取相对于其最近的有定位的父元素的位置。
+$(selector).position();
+```
+
+
+
+# jQuery事件机制
+
+简单事件绑定>>bind事件绑定>>delegate事件绑定>>on事件绑定(推荐)
+
+## on注册事件(重点)
+
+on注册简单事件
+
+```javascript
+// 表示给$(selector)绑定事件，并且由自己触发，不支持动态绑定。
+$(selector).on( "click", function() {});
+```
+
+on注册委托事件
+
+```javascript
+// 表示给$(selector)绑定代理事件，当必须是它的内部元素span才能触发这个事件，支持动态绑定
+$(selector).on( "click",“span”, function() {});
+
+```
+
+on注册事件的语法：
+
+```javascript
+// 第一个参数：events，绑定事件的名称可以是由空格分隔的多个事件（标准事件或者自定义事件）
+// 第二个参数：selector, 执行事件的后代元素（可选），如果没有后代元素，那么事件将有自己执行。
+// 第三个参数：data，传递给处理函数的数据，事件触发的时候通过event.data来使用（不常使用）
+// 第四个参数：handler，事件处理函数
+$(selector).on(events[,selector][,data],handler);
+```
+
+【案例：表格删除】
+
+```js
+$(function () {
+    //1.找到清空按钮，注册点击事件，清空tbody
+    $("#btn").on("click",function () {
+        $("#j_tb").empty()
+    });
+    //2.找到delete，注册点击事件
+    // $(".get").on("click",function () {
+    //     $(this).parent().parent().remove();
+    //     return false;
+    // });
+    $("#j_tb").on("click",".get",function () {
+       $(this).parent().parent().remove();
+       return false;
+    });
+    //3.找到添加按钮，注册点击事件
+    $("#btnAdd").on("click",function () {
+        $('<tr> <td>jQuery111</td> <td>传智播客-前端与移动开发学院111</td> <td><a href="javascrip:;" class="get">DELETE</a></td> </tr>')
+            .appendTo("#j_tb")
+    })
+})
+```
+
+## 事件解绑
+
+off方式（推荐）
+
+```javascript
+// 解绑匹配元素的所有事件
+$(selector).off();
+// 解绑匹配元素的所有click事件
+$(selector).off("click");
+```
+
+## 触发事件
+
+```js
+$(selector).click(); //触发 click事件
+$(selector).trigger("click");
+```
+
+## jQuery事件对象
+
+```js
+var money=100;
+// $("div").on("click",function () {
+//     console.log("div----"+e.data)//0---------在点击的时候，页面已经加载完，全局变量money=0;
+// });
+//on(types,selector,data,callback)
+//使用on方法的时候,可以给data参数传一个值，可以在事件里面通过e.data获取
+$("div").on("click",money,function (e) {
+    console.log("div----"+e.data)//100
+});
+money=0;
+$("p").on("click",function () {
+    console.log("p-----"+money)//0
+})
+```
+
+jQuery事件对象其实就是js事件对象的一个封装，处理了兼容性。
+
+```javascript
+//screenX和screenY	对应屏幕最左上角的值
+//clientX和clientY	距离页面左上角的位置（忽视滚动条）
+//pageX和pageY	距离页面最顶部的左上角的位置（会计算滚动条的距离）
+
+//event.keyCode	按下的键盘代码
+//event.data	存储绑定事件时传递的附加数据
+
+//event.stopPropagation()	阻止事件冒泡行为
+//event.preventDefault()	阻止浏览器默认行为
+//return false:既能阻止事件冒泡，又能阻止浏览器默认行为。
+```
+
+【案例：钢琴版导航（加强）.html】
+
+```js
+$(function () {
+    //给li注册鼠标进入事件,让li下面的span top：0  播放音乐
+    $(".nav li").mouseenter(function () {
+        console.log("11111111");
+        $(this).children("span").stop().animate({top:0});
+        //播放音乐
+        var idx=$(this).index();
+        $(".nav audio").get(idx).load();
+        $(".nav audio").get(idx).play();
+    }).mouseleave(function () {
+        $(this).children("span").stop().animate({top:60});
+    });
+
+    //节流阀：按下的时候触发 如果没弹起 不让触发下一次
+    //1.定义一个变量flag
+    var flag=true;
+
+    $(document).on("keydown",function (e) {
+        if(flag){
+            flag=false;
+            var code=e.keyCode;
+            if(code>=49&&code<=57){
+                $(".nav li").eq(code-49).trigger("mouseenter");
+            }
+        }
+
+    });
+    $(document).on("keyup",function (e) {
+        flag=true;
+        var code=e.keyCode;
+        if(code>=49&&code<=57){
+            $(".nav li").eq(code-49).trigger("mouseleave");
+        }
+    })
+})
+```
+
+# jQuery补充知识点
+
+# jQuery补充知识点
+
+## 链式编程
+
+通常情况下，只有设置操作才能把链式编程延续下去。因为获取操作的时候，会返回获取到的相应的值，无法返回 jQuery对象。
+
+```javascript
+end(); // 筛选选择器会改变jQuery对象的DOM对象，想要回复到上一次的状态，并且返回匹配元素之前的状态。
+```
+
+【案例：五角星评分案例.html】
+
+```js
+$(function () {
+    //给li注册鼠标经过事件，让自己和前面的兄弟都变成实心
+    var wjx_k="☆";
+    var wjx_s="★";
+    $(".comment>li").on("mouseenter",function () {
+        //end方法：回到前一次的jq对象
+        $(this).text(wjx_s).prevAll().text(wjx_s).end().nextAll().text(wjx_k);
+    });
+    //给ul注册鼠标离开事件，然所有的li都变成空心的
+    $(".comment").on("mouseleave",function () {
+        $(this).children().text(wjx_k);
+
+        //在做一件事情，找到current，让current和current前面的全部变成实心
+        $("li.current").text(wjx_s).prevAll().text(wjx_s);
+
+    });
+    //给li注册点击事件
+    $(".comment>li").on("click",function () {
+        $(this).addClass("current").siblings().removeClass("current");
+    });
+})
+```
+
+## each方法
+
+jQuery的隐式迭代会对所有的DOM对象设置相同的值，但是如果我们需要给每一个对象设置不同的值的时候，就需要自己进行迭代了。
+
+作用：遍历jQuery对象集合，为每个匹配的元素执行一个函数
+
+```javascript
+// 参数一表示当前元素在所有匹配元素中的索引号
+// 参数二表示当前元素（DOM对象）
+$(selector).each(function(index,element){});
+```
+
+【案例：不同的透明度.html】
+
+```js
+// for(var i=0;i<$("li").length;i++){
+//     $("li").eq(i).css("opacity",(i+1)/10)
+// }
+
+//each方法
+$("li").each(function (index,element) {
+    $(element).css("opacity",(index+1)/10)
+})
+```
+
+## 多库共存
+
+jQuery使用$作为标示符，但是如果与其他框架中的$冲突时，jQuery可以释放$符的控制权.
+
+```javascript
+var c = $.noConflict();//释放$的控制权,并且把$的能力给了c
 ```
 
