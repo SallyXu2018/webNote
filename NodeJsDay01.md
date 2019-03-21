@@ -730,3 +730,676 @@ http
 
 
 # 6. Node中的模块系统 
+
+使用node编写应用程序时主要就是在使用：
+
+- EcmaScript语言
+  - 和浏览器哦不一样，在node中没有bom和dom
+- 核心模块
+  - 文件操作的fs
+  - http服务的http
+  - URL路径操作模块
+  - path路径处理模块
+  - os操作系统信息
+- 第三方模块
+  - art-template（不许通过npm下载才可以使用）
+- 自己写的模块
+
+## 什么是模块化
+
+- 文件作用域
+- 通信规则
+  - 加载 require
+  - 倒出 
+
+## CommonJS模块规范
+
+在node中的JavaScript还有一个重要的概念，模块系统
+
+- 模块作用域
+- 使用require方法来加载模块
+- 使用exports接口对象来导出模块中的成员
+
+### 加载 `require`
+
+语法
+
+```JavaScript
+var 自定义变量名=require('模块')
+```
+
+两个作用：
+
+- 执行被加载模块中的代码
+- 得到被加载模块中的`exports`倒出接口对象
+
+#### require方法加载规则
+
+- 优先从缓存加载
+- 判断模块标识
+
+```JavaScript
+// 如果是非路径形式的模块标识
+// 路径形式的模块：
+//  ./ 当前目录，不可省略
+//  ../ 上一级目录，不可省略
+//  /xxx 几乎不用
+//  d:/a/foo.js 几乎不用
+//  首位的 / 在这里表示的是当前文件模块所属磁盘根路径
+//  .js 后缀名可以省略
+// require('./foo.js')
+
+// 核心模块的本质也是文件
+// 核心模块文件已经被编译到了二进制文件中了，我们只需要按照名字来加载就可以了
+// require('fs')
+// require('http')
+
+// 第三方模块
+// 凡是第三方模块都必须通过 npm 来下载
+// 使用的时候就可以通过 require('包名') 的方式来进行加载才可以使用
+// 不可能有任何一个第三方包和核心模块的名字是一样的
+// 既不是核心模块、也不是路径形式的模块
+//    先找到当前文件所处目录中的 node_modules 目录
+//    node_modules/art-template
+//    node_modules/art-template/package.json 文件
+//    node_modules/art-template/package.json 文件中的 main 属性
+//    main 属性中就记录了 art-template 的入口模块
+//    然后加载使用这个第三方包
+//    实际上最终加载的还是文件
+
+//    如果 package.json 文件不存在或者 main 指定的入口模块是也没有
+//    则 node 会自动找该目录下的 index.js
+//    也就是说 index.js 会作为一个默认备选项
+//    
+//    如果以上所有任何一个条件都不成立，则会进入上一级目录中的 node_modules 目录查找
+//    如果上一级还没有，则继续往上上一级查找
+//    。。。
+//    如果直到当前磁盘根目录还找不到，最后报错：
+//      can not find module xxx
+// var template = require('art-template')
+```
+
+### 倒出 `exports`
+
+- node中是模块作用域，默认文件所有成员只在当前文件模块中有效
+- 对于希望可以被其他模块访问的成员，我们就需要把这些公开的成员都挂载到`exports`接口对象中就可以了
+
+#### 导出多个成员（必须在对象中）
+
+```javascript
+exports.a=123;
+exports.b='hello';
+exports.c=function(){
+    console.log('ccc');
+}
+exports.d={
+    foo='bar'
+}
+```
+
+倒出多个成员也可以这么写：
+
+```javascript
+module.exports={
+    foo:'bar',
+    add:function(){
+        
+    }
+}
+```
+
+#### 导出单个成员（拿到的是函数、字符串）
+
+```javascript
+module.exports='hello';
+```
+
+以下情况会覆盖
+
+```javascript
+module.exports='hello';
+//以这个为准，后者会覆盖前者
+module.exports =function(x,y){
+    return x+y;
+}
+```
+
+
+
+#### 原理解析
+
+exports和`module.exports`的一个引用
+
+```javascript
+console.log(exports===module.exports)//ture
+exports.foo='bar';
+//等价于
+module.exports.foo='bar'
+```
+
+#### exports 和 module.exports 的区别
+
+- 每个模块中都有一个 module 对象
+- module 对象中有一个 exports 对象
+- 我们可以把需要导出的成员都挂载到 module.exports 接口对象中
+- 也就是：`moudle.exports.xxx = xxx` 的方式
+- 但是每次都 `moudle.exports.xxx = xxx` 很麻烦，点儿的太多了
+- 所以 Node 为了你方便，同时在每一个模块中都提供了一个成员叫：`exports`
+- `exports === module.exports` 结果为  `true`s
+- 所以对于：`moudle.exports.xxx = xxx` 的方式 完全可以：`expots.xxx = xxx`
+- 当一个模块需要导出单个成员的时候，这个时候必须使用：`module.exports = xxx` 的方式
+- 不要使用 `exports = xxx` 不管用
+- 因为每个模块最终向外 `return` 的是 `module.exports`
+- 而 `exports` 只是 `module.exports` 的一个引用
+- 所以即便你为 `exports = xx` 重新赋值，也不会影响 `module.exports`
+- 但是有一种赋值方式比较特殊：`exports = module.exports` 这个用来重新建立引用关系的
+- 之所以让大家明白这个道理，是希望可以更灵活的去用它
+
+### 补充  
+
+#### jQuery 的 each 和 原生的 JavaScript 方法 forEach
+
+- EcmaScript 5 提供的
+  - 不兼容 IE 8
+- jQuery 的 each 由 jQuery 这个第三方库提供
+  - jQuery 2 以下的版本是兼容 IE 8 的
+  - 它的 each 方法主要用来遍历 jQuery 实例对象（伪数组）
+  - 同时它也可以作为低版本浏览器中 forEach 替代品
+  - jQuery 的实例对象不能使用 forEach 方法，如果想要使用必须转为数组才可以使用
+  - `[].slice.call(jQuery实例对象)`
+
+#### 301 和 302 状态码区别
+
+- 301 永久重定向，浏览器会记住
+- 302 临时重定向
+
+
+
+加载规则以及加载机制
+
+循环加载
+
+#### 文件操作路径和模块路径
+
+文件操作路径：
+
+```javascript
+// 在文件操作的相对路径中
+//    ./data/a.txt 相对于当前目录
+//    data/a.txt   相对于当前目录
+//    /data/a.txt  绝对路径，当前文件模块所处磁盘根目录
+//    c:/xx/xx...  绝对路径
+// fs.readFile('./data/a.txt', function (err, data) {
+//   if (err) {
+//     console.log(err)
+//     return console.log('读取失败')
+//   }
+//   console.log(data.toString())
+// })
+
+```
+
+模块操作路径：
+
+```javascript
+// 在模块加载中，如果忽略了.，择业时磁盘根路径
+ require('/data/foo.js')
+
+//相对路径
+require('./data/foo.js')('hello')
+
+//模块加载的路径中的相对路径中不能省略./
+```
+
+#### 修改完代码自动重启
+
+使用一个第三方命名行工具，`nodemon`来帮我们解决频繁修改代码重启服务器问题
+
+`nodemon`是一个基于node.js开发的一个第三方命令行工具，我们使用的话死后要独立安装
+
+```shell
+npm install --global nodemon
+```
+
+安装完毕之后，使用：
+
+```shell
+nodemon app.js
+```
+
+只要是通过`nodemon app.js`启动服务，他会监视文件的变化，当文件发生变化时，自动帮你重启服务器
+
+
+
+## npm
+
+- node package manager
+
+### npm网站
+
+http://www.npmjs.com
+
+### npm命令行工具
+
+只要安装了node就已经安装了npm
+
+可以再命令行中输入`npm --version`查看npm版本
+
+升级npm版本`npm install --global npm`命令
+
+### 常用命令
+
+- npm init
+  - npm init -y可以跳过向导，快速生成
+- npm install
+  - 一次性把dependencies选项中的依赖项全部安装
+  - npm i 
+- npm install 包名
+  - 只下载
+  - npm i 包名
+- npm insatall --save 包名
+  - 下载并且保存依赖项（package.json文件中的dependencies选项
+  - npm i -S 包名
+- npm uninstall 包名
+  - 只删除，如果有依赖项依然保存
+  - npm un 包名
+- npm uninstall --save 包名
+  - 删除的同时也会把依赖信息也去除
+  - npm un -S 包名
+- npm help
+  - 查看使用帮助
+- npm 命令 --help
+  - 查看指定命令的使用帮助
+
+### 解决npm被墙问题
+
+npm存储包文件的服务器在国外，有时候会被墙，速度很慢。
+
+http://npm.taobao.org
+
+安装淘宝的cnpm，在任意目录下都可执行命令行`npm install --global cnpm`
+
+```shell
+#这里还是使用国外的npm服务器
+npm install jquery
+#这里使用的是淘宝的npm
+cnpm install jquery
+```
+
+如果不想安装`cnpm`又想使用淘宝的服务器下载：
+
+```shell
+npm install jquery --registry=https://registry.npm.taobao.org
+```
+
+但是每次手动打参数很麻烦，所以可以把这个选项加入到配置文件中
+
+```shell
+npm config set registry https://registry.npm.taobao.org
+
+#查看npm配置信息
+npm config list
+```
+
+只要经过了上面命令的配置，则以后所有的`npm stall`都会默认通过淘宝服务器下载
+
+## package.json
+
+我们建议每个项目都有一个`package.json`文件（包描述文件，就像产品的说明书一样），给人踏实的感觉。
+
+这个文件可以通过`npm init`的方式来自动初始化出来
+
+然后下载第三方包的时候，如`npm install --save art-template`中有--save，则在`package.json`自动生成引用的具体文件
+
+
+
+对于我们目前来讲最有用的是`dependencies`选项，可以用来帮助我们保存第三方包的依赖信息
+
+如果你的`node_modules`删除了也不担心，我们只需要：`npm install`就会自动把`package.json`中的`dependencies`中所有的依赖项都下载回来
+
+- 建议每个项目根目录下都有一个`package.json`文件
+- 建议执行`npm install`包名的时候都是加上`--save`这个选项，目的使用来保存依赖信息
+
+# 9.express
+
+- http://expressjs.com
+
+## 安装
+
+```shell
+npm install --save express
+```
+
+## hello world
+
+```javascript
+var express = require('express')
+var app = express()
+app.get('/',(req,res)=>res.send('hello world !!'))
+app.listen(3000,()=>console.log('running'))
+```
+
+## 基本路由
+
+get：
+
+```JavaScript
+app.get('/',function(req,res){
+    res.send('hello world')
+})
+```
+
+post：
+
+```javascript
+app.post('/',function(req,res){
+    res.send('got a post request')
+})
+```
+
+
+
+## 静态服务
+
+```javascript
+//  /public资源
+app.use(express.static('public'))
+//  /files资源
+app.use(express.static('files'))//直接访问里面的资源
+
+//  /public/xxx
+app.use('/static',express.static('public'))
+
+//  /static/xxx
+app.use('/static',express.static('public'))//取别名，通过别名访问
+
+app.use('/static',express.static(path.join(__dirname,'public')))
+```
+
+
+
+
+
+## 整体感知
+
+```javascript
+//0 安装 npm install --save express
+//1 引包
+var express =require('express')
+
+//2 创建服务器应用
+//		也就是原来的http.createServer
+var app=express()
+
+//在express重开发资源就是一个API的事
+//公开制定目录
+//只要这样做了，就可以直接通过/public/xx的方式来访问public中所有的资源了
+app.use('/public/',express.static('./public/'))
+app.use('/static/',express.static('./static/'))
+
+//模板引擎，在express中也是一个API的事
+
+//当服务器收到get请求/的时候，执行回调处理函数
+app.get('/',function (req,res) {
+	res.send('hello express!')
+})
+
+app.get('/about',function (req,res) {
+	res.send('你好我是about!')
+})
+
+//相当于server.listen
+app.listen(3000,function(){
+	console.log('app is running at port 3000')
+})
+```
+
+## 在express中配置使用`art-template`模板引擎
+
+- [art-template-github仓库](https://github.com/aui/art-template)
+- [art-template官方文档](https://aui.github.io/art-template/)
+
+安装
+
+```shell
+npm install --save art-template
+npm install --save express-art-template
+```
+
+配置
+
+```javascript
+//第一个参数：表示当渲染以.art结尾的文件的时候，使用art-template模板引擎
+app.engine('html', require('express-art-template'));
+```
+
+使用
+
+```javascript
+app.get('/',function (req,res) {
+    //express默认会去项目中的views目录查找该模板文件
+    res.render('index.html')
+});
+```
+
+如果希望修改默认的`views`视图渲染目录，可以
+
+```javascript
+//views不可以更改
+app.set('views',render函数的默认路径)
+```
+
+
+
+## 在express获取表单get请求参数
+
+express内置了一个API，可以直接通过`req.query`来获取
+
+```javascript
+req.query
+```
+
+
+
+## 在express获取表单post请求体数据
+
+在express中没有内置获取表单post请求体的API，这里我们需要使用第三方包：`body-parser`
+
+安装
+
+```shell
+npm install --save body-parser
+```
+
+配置
+
+```javascript
+var express =require('express')
+//引包
+var bodyParser=require('body-parser')
+
+var app=express()
+//配置body-parser
+//只要加入这个配置，则在req请求对象上会多出来一个属性
+//也就是说你可以直接通过req.body来获取表单post请求体数据
+app.use(bodyParser.urlencoded({extended:false}))
+
+app.use(bodyParser.json())
+```
+
+使用
+
+```javascript
+app.use(function(req,res){
+    res.setHeader('Content-Type','text/plain')
+    res.write('you posted :\n')
+    //通过req.body来获取表单post请求体数据
+    res,end(JSON.stringify(req.body	,null,2))
+})
+```
+
+
+
+## crud案例
+
+### 模块化思想
+
+模块如何划分
+
+- 模块职责要单一
+
+### 起步
+
+- 初始化
+- 安装模块
+- 模板处理
+
+### 路由设计
+
+| 请求方法 | 请求路径         | get 参数 | post 参数                      | 备注             |
+| -------- | ---------------- | -------- | ------------------------------ | ---------------- |
+| GET      | /studens         |          |                                | 渲染首页         |
+| GET      | /students/new    |          |                                | 渲染添加学生页面 |
+| POST     | /studens/new     |          | name、age、gender、hobbies     | 处理添加学生请求 |
+| GET      | /students/edit   | id       |                                | 渲染编辑页面     |
+| POST     | /studens/edit    |          | id、name、age、gender、hobbies | 处理编辑请求     |
+| GET      | /students/delete | id       |                                | 处理删除请求     |
+
+### 提取路由模块
+
+router.js
+
+```javascript
+/**
+ * router.js路由模块
+ * 职责
+ *  处理路由
+ *  根据不同的请求方法+请求路径设置具体的处理函数
+ */
+
+
+var fs=require('fs');
+//express提供了一种更好的方式
+//专门用来包装路由的
+var express=require('express');
+
+//1.创建一个路由器
+var router=express.Router();
+//2.把路由都挂载到router路由容器中
+router.get('/students',function (req,res) {
+
+});
+router.get('/students/new',function (req,res) {
+    
+});
+router.post('/students/new',function (req,res) {
+  
+});
+router.get('/students/edit',function (req,res) {
+
+});
+router.post('/students/edit',function (req,res) {
+
+});
+router.get('/students/delete',function (req,res) {
+
+});
+//3.把router倒出
+module.exports=router;
+```
+
+app.js
+
+```javascript
+var router=require('./router');
+
+//把路由容器挂载到app服务中
+app.use(router);
+```
+
+### 设计操作数据的API文件模块
+
+```javascript
+/**
+ * student.js
+ * 数据操作文件模块
+ * 职责：操作文件中的数据，只处理数据，不关心业务
+ */
+
+/**
+ * 获取所有的学生列表
+ * return []
+ */
+exports.find=function () {
+    
+};
+
+/**
+ * 添加保存学生
+ */
+exports.save=function () {
+
+};
+
+/**
+ * 更新学生
+ */
+exports.update=function () {
+
+};
+
+/**
+ * 删除学生
+ */
+exports.delete=function () {
+
+};
+```
+
+### 自己编写的步骤
+
+- 处理模板
+- 开放静态资源
+- 配置模板引擎
+- 简单路由：/students渲染静态页出来
+- 路由设计
+- 提取路由模块
+- 由于接下来一系列的业务操作，都需要处理文件数据，所以要封装student.js
+- 先写好students.js文件结构
+  - 查询所有学生列表的API find
+  - findByid
+  - save
+  - updateById
+  - deleteById
+- 实现具体功能
+  - 通过路由收到请求
+  - 接收请求中的数据（get、post）
+    - req.query
+    - req.body
+  - 调用数据操作API处理数据
+  - 根据操作结果给客户端发送响应
+    - res.render
+    - res.redirict
+- 业务功能顺序
+  - 列表
+  - 添加
+  - 编辑
+  - 删除
+
+
+
+web开发框架
+
+高度封装了http模块
+
+更加专注于业务，而非底层细节
+
+知其所以然
+
+# 10.增删改查
+
+使用文件来保存数据（锻炼异步代码）
+
+# 11.MongoDB
+
+所有代码都分装好了
