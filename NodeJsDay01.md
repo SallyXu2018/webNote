@@ -1060,6 +1060,47 @@ npm config list
 - 建议每个项目根目录下都有一个`package.json`文件
 - 建议执行`npm install`包名的时候都是加上`--save`这个选项，目的使用来保存依赖信息
 
+### package.json和package-lock.json
+
+npm5以前是不会有`package-lock.json`这个文件的
+
+npm5以后才加入了这个文件
+
+当安装包的时候，	npm都会生成或者更新`package-lock.json`这个文件
+
+- npm5以后的版本安装包不需要`--save`参数，它会自动保存依赖信息
+- 当你安装的时候，会自动创建或者是更新`package-lock.json`这个文件
+- `package-lock.json`这个文件会保存`node_modules`中所有包的信息（版本、下载地址）
+  - 重新`npm install`的时候速度会提升
+- 从文件来看，有一个`lock`称之为锁
+  - 这个`lock`是用来锁定版本的
+
+
+
+# path路径操作模块
+
+- path.basename
+  - 获取一个路径的文件名（包含扩展名）
+- path.dirname
+  - 获取一个路径中的目录部分	
+- path.extname
+  - 获取一个路径中的扩展名
+- path.parse
+  - 把一个路径转为对象
+    - root根路径
+    - dir目录
+    - base包含后缀名文件名
+    - ext后缀名
+    - name不包含后缀名的文件名
+- path.join
+  - 路径拼接
+- path.isAbsolute
+  - 判断一个路径是否是绝对路径
+
+
+
+
+
 # 9.express
 
 - http://expressjs.com
@@ -1402,4 +1443,531 @@ web开发框架
 
 # 11.MongoDB
 
-所有代码都分装好了
+## 关系型数据库和费关系型数据库
+
+- 官网：https://mongoosejs.com
+- 官方指南：https://mongoosejs.com/docs/guide.html
+- 官方API文档：https://mongoosejs.com/docs/api.html
+
+表就是关系
+
+或者说表和表之间存在关系
+
+- 所有关系型数据库都需要通过`sql`语言来操作
+- 所有的关系型数据库在操作之前都需要设计表结构
+- 而且数据表还支持约束
+  - 唯一的
+  - 主键
+  - 默认值
+  - 非空
+- 非关系型数据库非常的灵活
+- 有的费关系型数据库就是key-value对儿
+- 但是MongoDB是长得最像关系型数据库的非关系型数据库
+  - 数据库--》数据库
+  - 数据表--》集合（数组）
+  - 表记录--》（文档对象）
+- MongoDB不需要设计表结构
+- 也就是说你可以任意的往里面存数据，没有结构性这么一说
+
+## MongoDB数据库的基本概念
+
+- 可以有多个数据库
+- 一个数据库中可以有多个集合（表）
+- 一个集合中可以有多个文档（表记录）
+- 文档结构很灵活，没有任何限制
+
+```javascript
+{
+    qq:{
+        users:[
+            {name:'sally',age:18},
+            {name:'sa',age:18},
+            {name:'lily',age:18}
+        ] ,
+        products:[
+                
+        ]
+    },
+    taobao:{
+            
+    },
+    baidu:{
+            
+    }
+}
+```
+
+
+
+## 安装
+
+- https://www.mongodb.com/dr/fastdl.mongodb.org/win32/mongodb-win32-x86_64-2008plus-ssl-4.0.6-signed.msi/download
+
+## 启动和关闭数据库
+
+启动：
+
+```shell
+#mongodb默认使用执行mongod命令所处盘符根目录下的/data/db作为自己的数据库存储目录
+#所以在第一次执行该命令之前先自己手动新建/data/db
+mongod
+```
+
+如果想要修改默认的数据存储目录，可以：
+
+```shell
+mongod --dbpath=数据存储目录路径
+```
+
+停止：
+
+```shell
+在开启服务的控制台，直接Ctrl+C即可停止
+或者直接关闭开启服务的控制台也可以
+```
+
+## 连接和退出数据库
+
+```shell
+#该命令默认连接本机的MongoDB服务
+mongo
+```
+
+```shell
+#在连接状态输入exit推出链接
+exit
+```
+
+## 基本命令
+
+- `show dbs`
+  - 查看显示所有的数据库
+- `db`
+  - 查看当前操作的数据库
+- `use 数据库名称`
+  - 切换到指定的数据库（如果没有会新建）
+- 插入数据
+
+## 在node中如何操作MongoDB数据
+
+### 使用官方的`mongodb`包来操作
+
+https://github.com/mongodb/node-mongodb-native
+
+### 使用第三方mongoose来操作MongoDB数据库
+
+第三方包：`mongoose`基于MongoDB官方的`mongodb`再一次做了封装
+
+- 网址：https://mongoosejs.com
+
+### 安装
+
+```shell
+npm i mongoose
+```
+
+### hello world
+
+```javascript
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true});
+
+const Cat = mongoose.model('Cat', { name: String });
+
+const kitty = new Cat({ name: 'Zildjian' });
+kitty.save().then(() => console.log('meow'));
+```
+
+### 官方指南
+
+#### 设计scheme发布model
+
+```javascript
+var mongoose = require('mongoose')
+
+var Schema = mongoose.Schema
+
+// 1. 连接数据库
+// 指定连接的数据库不需要存在，当你插入第一条数据之后就会自动被创建出来
+mongoose.connect('mongodb://localhost/itcast')
+
+// 2. 设计文档结构（表结构）
+// 字段名称就是表结构中的属性名称
+// 约束的目的是为了保证数据的完整性，不要有脏数据
+var userSchema = new Schema({
+  username: {
+    type: String,
+    required: true // 必须有
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String
+  }
+})
+
+// 3. 将文档结构发布为模型
+//    mongoose.model 方法就是用来将一个架构发布为 model
+//    第一个参数：传入一个大写名词单数字符串用来表示你的数据库名称
+//                 mongoose 会自动将大写名词的字符串生成 小写复数 的集合名称
+//                 例如这里的 User 最终会变为 users 集合名称
+//    第二个参数：架构 Schema
+//   
+//    返回值：模型构造函数
+var User = mongoose.model('User', userSchema)
+
+
+// 4. 当我们有了模型构造函数之后，就可以使用这个构造函数对 users 集合中的数据为所欲为了（增删改查）
+
+```
+
+#### 增加数据
+
+```javascript
+var admin = new User({
+username: 'zs',
+password: '123456',
+email: 'admin@admin.com'
+})
+
+admin.save(function (err, ret) {
+	if (err) {
+	console.log('保存失败')
+    } else {
+		console.log('保存成功')
+		console.log(ret)
+	}
+})
+```
+
+#### 查询
+
+```javascript
+//查询所有
+User.find(function (err, ret) {
+  if (err) {
+    console.log('查询失败')
+  } else {
+    console.log(ret)
+  }
+})
+//按条件查询所有
+User.find({
+  username: 'zs'
+}, function (err, ret) {
+  if (err) {
+    console.log('查询失败')
+  } else {
+    console.log(ret)
+  }
+})
+//按条件查询单个
+User.findOne({
+  username: 'zs'
+}, function (err, ret) {
+  if (err) {
+    console.log('查询失败')
+  } else {
+    console.log(ret)
+  }
+})
+```
+
+#### 删除
+
+```javascript
+User.remove({
+  username: 'zs'
+}, function (err, ret) {
+  if (err) {
+    console.log('删除失败')
+  } else {
+    console.log('删除成功')
+    console.log(ret)
+  }
+})
+```
+
+#### 更新
+
+```javascript
+User.findByIdAndUpdate('id码', {
+  password: '123'
+}, function (err, ret) {
+  if (err) {
+    console.log('更新失败')
+  } else {
+    console.log('更新成功')
+  }
+})
+```
+
+# 12.异步编程
+
+## 回调函数 
+
+不成立的情况
+
+```javascript
+function add(x,y){
+    console.log(1)
+    setTimeout(function(){
+        console.log(2)
+        var ret=x+y
+        return ret
+    },1000)
+    console.log(3)
+    //到这里就结束了，不等到前面的定时器结束，所以直接返回了undefined
+}
+console.log(add(10,20))
+```
+
+不成立的情况
+
+```javascript
+function add(x,y){
+    var ret
+    console.log(1)
+    setTimeout(function(){
+        console.log(2)
+        ret=x+y
+    },1000)
+    console.log(3)
+    return ret
+    //到这里就结束了，不等到前面的定时器结束，所以直接返回了undefined
+}
+console.log(add(10,20))
+```
+
+注意：凡是需要得到一个函数内部异步操作的结果
+
+- setTimeout
+- readFile
+- writeFile
+- ajax
+
+这种情况必须通过回调函数
+
+```javascript
+function add(x,y，callback){
+    //callback就是回调函数
+    //var x=10
+    //var y=20
+    //var callback=function(ret){console.log(ret)}
+    console.log(1)
+    setTimeout(function(){
+        var ret=x+y
+       callback(ret)
+    },1000)
+}
+add(10,20,function(ret){
+    console.log(ret)
+})
+```
+
+## promise
+
+callback-hell
+
+无法保证顺序的代码
+
+```javascript
+var fs=require('fs');
+
+fs.readFile('./data/a.txt','utf8',function (err,data) {
+    if(err){
+        // return console.log('读取失败')
+        //抛出异常
+        //  1.阻止程序的异常
+        //  2.把错误消息打印给控制台
+        throw err
+    }
+    console.log(data)
+});
+
+fs.readFile('./data/b.txt','utf8',function (err,data) {
+    if(err){
+        throw err
+    }
+    console.log(data)
+});
+
+
+fs.readFile('./data/c.txt','utf8',function (err,data) {
+    if(err){
+        throw err
+    }
+    console.log(data)
+});
+```
+
+通过回调嵌套的方式来保证顺序------->callback-hell
+
+```javascript
+var fs = require('fs');
+
+fs.readFile('./data/a.txt', 'utf8', function (err, data) {
+    if (err) {
+        // return console.log('读取失败')
+        //抛出异常
+        //  1.阻止程序的异常
+        //  2.把错误消息打印给控制台
+        throw err
+    }
+    console.log(data);
+    fs.readFile('./data/b.txt', 'utf8', function (err, data) {
+        if (err) {
+            throw err
+        }
+        console.log(data);
+
+        fs.readFile('./data/c.txt', 'utf8', function (err, data) {
+            if (err) {
+                throw err
+            }
+            console.log(data)
+        });
+
+    });
+
+});
+```
+
+为了解决以上编码方式带来的问题（回调地狱嵌套），所以在EcmaScript 6中新增了一个API：`promise`
+
+```javascript
+var fs = require('fs')
+
+var p1 = new Promise(function (resolve, reject) {
+  fs.readFile('./data/a.txt', 'utf8', function (err, data) {
+    if (err) {
+      reject(err)
+    } else {
+      resolve(data)
+    }
+  })
+})
+
+var p2 = new Promise(function (resolve, reject) {
+  fs.readFile('./data/b.txt', 'utf8', function (err, data) {
+    if (err) {
+      reject(err)
+    } else {
+      resolve(data)
+    }
+  })
+})
+
+var p3 = new Promise(function (resolve, reject) {
+  fs.readFile('./data/c.txt', 'utf8', function (err, data) {
+    if (err) {
+      reject(err)
+    } else {
+      resolve(data)
+    }
+  })
+})
+
+p1
+  .then(function (data) {
+    console.log(data)
+    // 当 p1 读取成功的时候
+    // 当前函数中 return 的结果就可以在后面的 then 中 function 接收到
+    // 当你 return 123 后面就接收到 123
+    //      return 'hello' 后面就接收到 'hello'
+    //      没有 return 后面收到的就是 undefined
+    // 上面那些 return 的数据没什么卵用
+    // 真正有用的是：我们可以 return 一个 Promise 对象
+    // 当 return 一个 Promise 对象的时候，后续的 then 中的 方法的第一个参数会作为 p2 的 resolve
+    return p2
+  }, function (err) {
+    console.log('读取文件失败了', err)
+  })
+  .then(function (data) {
+    console.log(data)
+    return p3
+  })
+  .then(function (data) {
+    console.log(data)
+    console.log('end')
+  })
+
+```
+
+封装promise版本的`readFile`
+
+```javascript
+var fs=require('fs');
+function pReadFile(filePatn) {
+    return new Promise(function (resolve,reject) {
+        fs.readFile(filePatn,'utf8',function (err,data) {
+            if(err){
+                reject(err)
+            }else {
+                resolve(data)
+            }
+        })
+    })
+}
+pReadFile('./data/a.txt')
+    .then(function (data) {
+        console.log(data);
+        return pReadFile('./data/b.txt')
+    })
+    .then(function (data) {
+        console.log(data);
+        return pReadFile('./data/c.txt')
+    })
+    .then(function (data) {
+        console.log(data)
+    });
+```
+
+
+
+
+
+# 13.使用node操作MySQL数据库
+
+## 安装
+
+```shell
+npm install mysql
+```
+
+
+
+
+
+```javascript
+var mysql = require('mysql');
+
+// 1. 创建连接
+var connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'root',
+  database: 'users' // 对不起，我一不小心把数据库名字和表名起成一样的，你知道就行
+});
+
+// 2. 连接数据库 打开冰箱门
+connection.connect();
+
+// 3. 执行数据操作 把大象放到冰箱
+connection.query('SELECT * FROM `users`', function (error, results, fields) {
+  if (error) throw error;
+  console.log('The solution is: ', results);
+});
+
+// connection.query('INSERT INTO users VALUES(NULL, "admin", "123456")', function (error, results, fields) {
+//   if (error) throw error;
+//   console.log('The solution is: ', results);
+// });
+
+// 4. 关闭连接 关闭冰箱门
+connection.end();
+
+```
+
