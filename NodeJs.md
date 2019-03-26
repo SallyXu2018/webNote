@@ -1299,6 +1299,43 @@ app.use(function(req,res){
 })
 ```
 
+## 在express配置使用`express-session`插件
+
+参考文档：[https://github.com/expressjs/session]
+
+安装
+
+```shell
+npm install express-session
+```
+
+配置
+
+```javascript
+//该插件会为req请求对象添加一个成员：req.session默认是一个对象
+//这是最简单的配置方式
+app.use(session({
+    //配置加密字符串，他会在原有加密基础之上和这个字符串拼起来加密
+    //目的是为了增加安全性，防止客户端恶意伪造
+    secret: 'ITcast',
+    resave: false,
+    saveUninitialized: true,//无论你是否使用session，我都默认直接分给你一把钥匙
+    //cookie: { secure: true }
+}));
+```
+
+使用
+
+```javascript
+//添加session数据
+req.session.foo='bar'
+
+//获取session数据
+req.session.foo
+```
+
+提示：默认session数据是内存存储的，服务器一旦重启就会丢失，真正的生产环境，会把session持久化存储。
+
 
 
 ## crud案例
@@ -1449,13 +1486,94 @@ exports.delete=function () {
 
 
 
-web开发框架
+## 中间件
 
-高度封装了http模块
+- 同一个请求所经过的中间件都是同一个请求对象和响应对象
 
-更加专注于业务，而非底层细节
+### 应用程序级别中间件
 
-知其所以然
+万能匹配
+
+```javascript
+app.use(function(req,res,next){
+    console.log('Time',Date.now())
+    next()
+})
+```
+
+只要是以'/xxx/'开头的
+
+```javascript
+app.use('/a',function(req,res,next){
+    console.log('Time',Date.now())
+    next()
+})
+```
+
+### 路由级别中间件
+
+get:
+
+```javascript
+app.use('/',function(req,res){
+    res.send('hello world')
+})
+```
+
+post:
+
+```javascript
+app.post('/',function(req,res){
+    res.send('got a post request')
+})
+```
+
+put:
+
+```javascript
+app.put('/user',function(req,res){
+    res.send('got a put request at /user')
+})
+```
+
+delete:
+
+```javascript
+app.delete('/user',function(req,res){
+    res.send('got a delete request at /user')
+})
+```
+
+### 错误处理中间件
+
+```javascript
+app.use('/a',function(err,req,res,next){
+    console.log(err.stack)
+    res.status(500).send('something broke')
+})
+```
+
+### 内置中间件
+
+- express-static
+
+### 第三方中间件
+
+http://expressjs.com/en/resources/middleware.html
+
+- body-parser
+- compression
+- cookie-parser
+- morgan
+- response-time
+- serve-static
+- session
+
+
+
+
+
+
 
 # 10.增删改查
 
