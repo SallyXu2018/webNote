@@ -38,20 +38,17 @@
 ### [对象](https://github.com/SallyXu2018/webNote/blob/master/Js/object.md)
 
 
-## DOM（document object model）： 文档对象模型
 
-### [DOM基础概念及基础练习总结](https://github.com/SallyXu2018/webNote/blob/master/Js/DOM.md)
-
-## BOM（browser object model）：浏览器对象模型 
-
-### [BOM基础概念及基础练习总结](https://github.com/SallyXu2018/webNote/blob/master/Js/BOM.md)
+## [DOM基础概念及基础](https://github.com/SallyXu2018/webNote/blob/master/Js/DOM.md)
 
 
-## JavaScript高级
-### [JavaScript高级总结](https://github.com/SallyXu2018/webNote/blob/master/Js/JavaScript%E9%AB%98%E7%BA%A7.md)
 
-## jQuery
-### [jQuery笔记和总结](https://github.com/SallyXu2018/webNote/blob/master/Js/jQuery.md)
+## [BOM基础概念及基础](https://github.com/SallyXu2018/webNote/blob/master/Js/BOM.md)
+
+
+## [JavaScript高级](https://github.com/SallyXu2018/webNote/blob/master/Js/JavaScript%E9%AB%98%E7%BA%A7.md)
+
+## [jQuery](https://github.com/SallyXu2018/webNote/blob/master/Js/jQuery.md)
 
 
 ## [NodeJS](https://github.com/SallyXu2018/webNote/blob/master/NodeJsDay01.md)
