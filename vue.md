@@ -1,3 +1,9 @@
+
+
+
+
+
+
 # Vue.js - Day1
 
 ### 什么是Vue.js
@@ -433,12 +439,14 @@ data: {
         h1StyleObj: { color: 'red', 'font-size': '40px', 'font-weight': '200' },
         h1StyleObj2: { fontStyle: 'italic' }
 }
+
 ```
 
 - 在元素中，通过属性绑定的形式，将样式对象应用到元素中：
 
 ```
 <h1 :style="[h1StyleObj, h1StyleObj2]">这是一个善良的H1</h1>
+
 ```
 
 
@@ -451,12 +459,14 @@ data: {
 data:{
     list:[1,2,3,4,5,6]
 }
+
 ```
 
 ```
 <ul>
   <li v-for="(item, i) in list">索引：{{i}} --- 姓名：{{item.name}} --- 年龄：{{item.age}}</li>
 </ul>
+
 ```
 
 1. 迭代对象中的属性
@@ -469,10 +479,12 @@ data: {
         gender: '男'
     }
 }
+
 ```
 
 ```
 <p v-for="(val,key,i) in user">值:{{val}}---键:{{key}}---index:{{i}}</p>
+
 ```
 
 1. 迭代数字
@@ -481,6 +493,7 @@ count从1开始循环
 
 ```
 <p v-for="count in 10">这是第{{count}}次循环</p>
+
 ```
 
 
@@ -516,6 +529,7 @@ count从1开始循环
         <input type="checkbox"> {{item.id}}--{{item.name}}
     </p>
 </div>
+
 ```
 
 
@@ -562,6 +576,7 @@ var vm=new Vue({
     <h3 v-if="flag">这是用v-if控制的元素</h3>
     <h3 v-show="flag">这是用v-show控制的元素</h3>
 </div>
+
 ```
 
 ```JavaScript
@@ -577,6 +592,10 @@ var vm=new Vue({
     }
 });
 ```
+
+
+
+
 
 # Vue.js - Day2
 
@@ -633,6 +652,7 @@ var vm=new Vue({
 
     </table>
 </div>
+
 ```
 
 ### 添加新品牌
@@ -735,63 +755,6 @@ Vue.filter('dateFormat',function (dataStr,pattern='') {
 
 
 
-1. 
-
- 
-
-
-
-1. 在2.x版本中[手动实现筛选的方式](https://cn.vuejs.org/v2/guide/list.html#显示过滤-排序结果)：
-
-- 筛选框绑定到 VM 实例中的 `searchName` 属性：
-
-```
-<hr> 输入筛选名称：
-
-<input type="text" v-model="searchName">
-
-```
-
-- 在使用 `v-for` 指令循环每一行数据的时候，不再直接 `item in list`，而是 `in` 一个 过滤的methods 方法，同时，把过滤条件`searchName`传递进去：
-
-```
-<tbody>
-
-      <tr v-for="item in search(searchName)">
-
-        <td>{{item.id}}</td>
-
-        <td>{{item.name}}</td>
-
-        <td>{{item.ctime}}</td>
-
-        <td>
-
-          <a href="#" @click.prevent="del(item.id)">删除</a>
-
-        </td>
-
-      </tr>
-
-    </tbody>
-
-```
-
-- `search` 过滤方法中，使用 数组的 `filter` 方法进行过滤：
-
-```
-search(name) {
-
-  return this.list.filter(x => {
-
-    return x.name.indexOf(name) != -1;
-
-  });
-
-}
-
-```
-
 ## Vue调试工具`vue-devtools`的安装步骤和使用
 
 [Vue.js devtools - 翻墙安装方式 - 推荐](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=zh-CN)
@@ -808,14 +771,14 @@ search(name) {
 
 ### 私有过滤器
 
-1. HTML元素：
+HTML元素：
 
 ```
 <td>{{item.ctime | dataFormat('yyyy-mm-dd')}}</td>
 
 ```
 
-1. 私有 `filters` 定义方式：
+私有 `filters` 定义方式：
 
 ```javascript
 var vm2=new Vue({
@@ -869,6 +832,7 @@ var vm2=new Vue({
 <div id="app">
     <p>{{msg | msgFormat('疯狂','勇敢') | test}}</p>
 </div>
+
 ```
 
 #### 过滤器的定义语法：
@@ -916,17 +880,18 @@ var vm=new Vue({
 
 ### [2.x中自定义键盘修饰符](https://cn.vuejs.org/v2/guide/events.html#键值修饰符)
 
-1. 通过`Vue.config.keyCodes.名称 = 按键值`来自定义案件修饰符的别名：
+通过`Vue.config.keyCodes.名称 = 按键值`来自定义案件修饰符的别名：
 
 ```javascript
 //全局
 Vue.config.keyCodes.f2 = 113;
 ```
 
-1. 使用自定义的按键修饰符：
+使用自定义的按键修饰符：
 
 ```
 <input type="text" v-model="name" @keyup.f2="add">
+
 ```
 
 
@@ -990,10 +955,11 @@ Vue.directive('focus',{
     });
 ```
 
-1. 自定义指令的使用方式：
+自定义指令的使用方式：
 
 ```
 <input type="text" class="form-control" v-model="keywords" v-focus v-color="'blue'">
+
 ```
 
 ### 自定义局部 自定义属性
@@ -1024,19 +990,15 @@ directives:{//自定义私有指令
 - [生命周期钩子](https://cn.vuejs.org/v2/api/#选项-生命周期钩子)：就是生命周期事件的别名而已；
 - 生命周期钩子 = 生命周期函数 = 生命周期事件
 - 主要的生命周期函数分类：
-
 - 创建期间的生命周期函数：
   - beforeCreate：实例刚在内存中被创建出来，此时，还没有初始化好 data 和 methods 属性
   - **created：实例已经在内存中创建OK，此时 data 和 methods 已经创建OK，此时还没有开始 编译模板**
   - beforeMount：此时已经完成了模板的编译，但是还没有挂载到页面中
   - **mounted：此时，已经将编译好的模板，挂载到了页面指定的容器中显示**
 - 运行期间的生命周期函数：
-
 - beforeUpdate：状态更新之前执行此函数， 此时 data 中的状态值是最新的，但是界面上显示的 数据还是旧的，因为此时还没有开始重新渲染DOM节点
 - updated：实例更新完毕之后调用此函数，此时 data 中的状态值 和 界面上显示的数据，都已经完成了更新，界面已经被重新渲染好了！
-
 - 销毁期间的生命周期函数：
-
 - beforeDestroy：实例销毁之前调用。在这一步，实例仍然完全可用。
 - destroyed：Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。
 
@@ -1093,31 +1055,32 @@ var vm = new Vue({
   <input type="button" value="修改msg" @click="msg='No'">
   <h3 id="h3">{{ msg }}</h3>
 </div>
+
 ```
 
 ## [vue-resource 实现 get, post, jsonp请求](https://github.com/pagekit/vue-resource)
 
 除了 vue-resource 之外，还可以使用 `axios` 的第三方包实现实现数据的请求
 
-1. 之前的学习中，如何发起数据请求？
-2. 常见的数据请求类型？  get  post jsonp
-3. 测试的URL请求资源地址：
+之前的学习中，如何发起数据请求？
+
+常见的数据请求类型？  get  post jsonp
+
+测试的URL请求资源地址：
 
 - get请求地址： http://vue.studyit.io/api/getlunbo    xujiajia  https://www.easy-mock.com/
 - post请求地址：http://vue.studyit.io/api/post
 - jsonp请求地址：http://vue.studyit.io/api/jsonp
 
-1. JSONP的实现原理
+### JSONP的实现原理
 
 - 由于浏览器的安全性限制，不允许AJAX访问 协议不同、域名不同、端口号不同的 数据接口，浏览器认为这种访问不安全；
 - 可以通过动态创建script标签的形式，把script标签的src属性，指向数据接口的地址，因为script标签不存在跨域限制，这种数据获取方式，称作JSONP（注意：根据JSONP的实现原理，知晓，JSONP只支持Get请求）；
 - 具体实现过程：
-
 - 先在客户端定义一个回调方法，预定义对数据的操作；
 - 再把这个回调方法的名称，通过URL传参的形式，提交到服务器的数据接口；
 - 服务器数据接口组织好要发送给客户端的数据，再拿着客户端传递过来的回调方法名称，拼接出一个调用这个方法的字符串，发送给客户端去解析执行；
 - 客户端拿到服务器返回的字符串之后，当作Script脚本去解析执行，这样就能够拿到JSONP的数据了；
-
 - 带大家通过 Node.js ，来手动实现一个JSONP的请求例子；
 
 ```javascript
@@ -1158,12 +1121,12 @@ var vm = new Vue({
     });
 ```
 
-1. vue-resource 的配置步骤：
+### vue-resource 的配置步骤：
 
 - 直接在页面中，通过`script`标签，引入 `vue-resource` 的脚本文件；
 - 注意：引用的先后顺序是：先引用 `Vue` 的脚本文件，再引用 `vue-resource` 的脚本文件；
 
-1. 发送get请求：
+#### 发送get请求：
 
 ```javascript
 getInfo() { // get 方式获取数据
@@ -1173,7 +1136,7 @@ getInfo() { // get 方式获取数据
 }
 ```
 
-1. 发送post请求：
+#### 发送post请求：
 
 ```javascript
 postInfo() {
@@ -1188,7 +1151,7 @@ postInfo() {
 }
 ```
 
-1. 发送JSONP请求获取数据：
+#### 发送JSONP请求获取数据：
 
 ```javascript
 jsonpInfo() { // JSONP形式从服务器获取数据
@@ -1198,4 +1161,301 @@ jsonpInfo() { // JSONP形式从服务器获取数据
   });
 }
 ```
+
+
+
+## 配置本地数据库和数据接口API
+
+1. 先解压安装 `PHPStudy`;
+2. 解压安装 `Navicat` 这个数据库可视化工具，并激活；
+3. 打开 `Navicat` 工具，新建空白数据库，名为 `dtcmsdb4`;
+4. 双击新建的数据库，连接上这个空白数据库，在新建的数据库上`右键` -> `运行SQL文件`，选择并执行 `dtcmsdb4.sql` 这个数据库脚本文件；如果执行不报错，则数据库导入完成；
+5. 进入文件夹 `vuecms3_nodejsapi` 内部，执行 `npm i` 安装所有的依赖项；
+6. 先确保本机安装了 `nodemon`, 没有安装，则运行 `npm i nodemon -g` 进行全局安装，安装完毕后，进入到 `vuecms3_nodejsapi`目录 -> `src`目录 -> 双击运行 `start.bat`
+7. 如果API启动失败，请检查 PHPStudy 是否正常开启，同时，检查 `app.js` 中第 `14行` 中数据库连接配置字符串是否正确；PHPStudy 中默认的 用户名是root，默认的密码也是root
+
+
+
+
+
+## [Vue中的动画](https://cn.vuejs.org/v2/guide/transitions.html)
+
+为什么要有动画：动画能够提高用户的体验，帮助用户更好的理解页面中的功能；
+
+### 使用过渡类名
+
+1. HTML结构：
+
+```
+<div id="app">
+    <input type="button" value="动起来" @click="myAnimate">
+    <!-- 使用 transition 将需要过渡的元素包裹起来 -->
+    <transition name="fade">
+      <div v-show="isshow">动画哦</div>
+    </transition>
+  </div>
+
+```
+
+1. VM 实例：
+
+```
+// 创建 Vue 实例，得到 ViewModel
+var vm = new Vue({
+  el: '#app',
+  data: {
+    isshow: false
+  },
+  methods: {
+    myAnimate() {
+      this.isshow = !this.isshow;
+    }
+  }
+});
+
+```
+
+1. 定义两组类样式：
+
+```
+/* 定义进入和离开时候的过渡状态 */
+    .fade-enter-active,
+    .fade-leave-active {
+      transition: all 0.2s ease;
+      position: absolute;
+    }
+
+    /* 定义进入过渡的开始状态 和 离开过渡的结束状态 */
+    .fade-enter,
+    .fade-leave-to {
+      opacity: 0;
+      transform: translateX(100px);
+    }
+
+```
+
+### [使用第三方 CSS 动画库](https://cn.vuejs.org/v2/guide/transitions.html#自定义过渡类名)
+
+导入动画类库：
+
+```
+<link rel="stylesheet" type="text/css" href="./lib/animate.css">
+
+```
+
+定义 transition 及属性：
+
+```
+<transition>
+	enter-active-class="fadeInRight"
+    leave-active-class="fadeOutRight"
+    :duration="{ enter: 500, leave: 800 }">
+  	<div class="animated" v-show="isshow">动画哦</div>
+</transition>
+
+```
+
+### 使用动画钩子函数
+
+定义 transition 组件以及三个钩子函数：
+
+```
+<div id="app">
+    <input type="button" value="gun" @click="flag=!flag">
+    <!--使用transition包裹起来-->
+    <transition
+    @before-enter="beforeEnter"
+    @enter="enter"
+    @after-enter="afterEnter">
+        <div class="ball" v-show="flag"></div>
+    </transition>
+
+</div>
+
+```
+
+定义三个 methods 钩子方法：
+
+```
+methods:{
+            //注意：动画钩子函数的第一个参数el，表示要执行动画的那个DOM元素，是哪个原生的js dom对象
+            //可以认为el是通过这种方式获取的原生对象document.getElementById()
+            beforeEnter(el){
+                //表示动画入场之前，此时动画尚未开始，可以再beforeEnter中设置，设置元素开始动画之前的起始样式
+                //设置小球开始动画之前的起始位置
+                el.style.transform="translate(0,0)"
+            },
+            enter(el,done){
+                //没有实际意义，但是不写就没有动画
+                //可以认为el.offsetWidth会强制动画刷新
+                el.offsetWidth
+                //表示动画开始之后的样式，可以设置小球完成动画之后的，结束状态
+                el.style.transform="translate(150px,450px)"
+                el.style.transition='all 1s ease'
+                //这里的done，其实就是afterEnter函数
+                done()
+            },
+            afterEnter(el){
+                //动画完成之后，会调用
+                this.flag=!this.flag
+            }
+        }
+
+```
+
+定义动画过渡时长和样式：
+
+```
+.ball{
+            width: 15px;
+            height:15px;
+            border-radius: 50%;
+            background: red;
+        }
+
+```
+
+### [v-for 的列表过渡](https://cn.vuejs.org/v2/guide/transitions.html#列表的进入和离开过渡)
+
+定义过渡样式：
+
+```
+ <style>
+        li{
+            border:1px dashed gray;
+            margin: 5px;
+            line-height: 35px;
+            padding-left: 5px;
+            font-size: 12px;
+        }
+
+        li:hover{
+            background-color: lightpink;
+            transition: all 0.4s ease
+        }
+        .v-enter,
+        .v-leave-to{
+            opacity: 0;
+            transform: translateY(80px);
+        }
+        .v-enter-active,
+        .v-leave-active{
+            transition: all 0.6s ease;
+        }
+    </style>
+
+```
+
+定义DOM结构，其中，需要使用 transition-group 组件把v-for循环的列表包裹起来：
+
+```
+<div id="app">
+    <div>
+        <label>
+            Id:
+            <input type="text" v-model="id">
+        </label>
+        <label>
+            Name:
+            <input type="text" v-model="name">
+        </label>
+
+        <input type="button" @click="add" value="添加">
+    </div>
+    <ul>
+        <!--//在实现列表过渡的时候，如果需要过渡的元素是通过v-for循环渲染出来的，不能使用transition，需要使用transitionGroup-->
+        <transition-group>
+            <!--如果要为v-for循环创建的元素设置动画，必须为每一个元素设置  :key属性-->
+            <li v-for="item in list" :key="item.id">
+                {{item.id}}------{{item.name}}
+            </li>
+        </transition-group>
+
+    </ul>
+</div>
+
+```
+
+定义 VM中的结构：
+
+```
+var vm=new Vue({
+        el:'#app',
+        data:{
+            id:'',
+            name:'',
+            list:[
+                {id:1,name:'张三'},
+                {id:2,name:'赵莉'},
+                {id:3,name:'王二麻子'},
+                {id:4,name:'隔壁老王'}
+            ]
+        },
+        methods:{
+            add(){
+                this.list.push({id:this.id,name:this.name});
+                this.id=this.name=''
+            }
+        }
+    });
+
+```
+
+### 列表的排序过渡
+
+`<transition-group>` 组件还有一个特殊之处。不仅可以进入和离开动画，**还可以改变定位**。要使用这个新功能只需了解新增的 `v-move` 特性，**它会在元素的改变定位的过程中应用**。
+
+- `v-move` 和 `v-leave-active` 结合使用，能够让列表的过渡更加平缓柔和：
+
+```
+/*下面的.v-move .v-leave-active配合使用，能够实现列表后续的元素渐渐地飘上来的效果 */
+        .v-move{
+            transition: all 0.6s ease;
+        }
+        .v-leave-active{
+            position:  absolute;
+        }
+
+```
+
+### 实现页面刚展示出来的入场的效果
+
+```
+<!--<ul>-->
+    <!--//在实现列表过渡的时候，如果需要过渡的元素是通过v-for循环渲染出来的，不能使用transition，需要使用transitionGroup-->
+    <!--给transition-group添加appear属性可以实现页面刚展示出来的入场的效果-->
+    <!-- 通过 为 transition-group 元素，设置 tag 属性，指定 transition-group 渲染为指定的元素，如果不指定 tag 属性，默认，渲染为 span 标签 -->
+<transition-group appear tag="ul">
+    <transition-group appear tag="ul">
+        <!--如果要为v-for循环创建的元素设置动画，必须为每一个元素设置  :key属性-->
+        <li v-for="(item,i) in list" :key="item.id" @click="del(i)">
+            {{item.id}}------{{item.name}}
+        </li>
+    </transition-group>
+
+<!--</ul>-->
+
+```
+
+
+
+
+
+## 相关文章
+
+1. [vue.js 1.x 文档](https://v1-cn.vuejs.org/)
+2. [vue.js 2.x 文档](https://cn.vuejs.org/)
+3. [String.prototype.padStart(maxLength, fillString)](http://www.css88.com/archives/7715)
+4. [js 里面的键盘事件对应的键码](http://www.cnblogs.com/wuhua1/p/6686237.html)
+5. [pagekit/vue-resource](https://github.com/pagekit/vue-resource)
+6. [navicat如何导入sql文件和导出sql文件](https://jingyan.baidu.com/article/a65957f4976aad24e67f9b9b.html)
+7. [贝塞尔在线生成器
+
+
+
+
+
+
+
+
 
